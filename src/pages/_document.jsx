@@ -26,7 +26,7 @@ class IndexPage extends Document {
           />
           <meta
             property="og:image"
-            content={`https://dayz-types-generator.vercel.app/static/TypesGenerator_DAYZ_White_300x300.png`}
+            content={`https://dayz-types-generator.vercel.app/static/TypesGenerator_DAYZ_Black_300x300.png`}
           />
           <meta property="og:description" content="Dayz Types Generator" />
           <link

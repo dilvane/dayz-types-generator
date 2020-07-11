@@ -213,7 +213,12 @@ export const CheckField = ({ label, ...props }: any) => {
     <Block>
       <Label variant={hasError ? "label.error" : "label"}>
         <Flex sx={{ alignItems: "center" }}>
-          <Checkbox {...field} {...props} defaultChecked={field.value} />
+          <Checkbox
+            {...field}
+            {...props}
+            defaultChecked={field.value}
+            sx={{ color: "white" }}
+          />
           {label}
         </Flex>
       </Label>

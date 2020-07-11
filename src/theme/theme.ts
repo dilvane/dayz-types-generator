@@ -308,6 +308,16 @@ export default {
     radio: {
       ...disabled,
     },
+    checkbox: {
+      color: "white",
+      outline: 0,
+      "input:checked ~ &": {
+        color: "white",
+      },
+      "input:focus ~ &": {
+        color: "gray.7",
+      },
+    },
     // switch: {
     //   borderColor: "gray",
     //   thumb: {
