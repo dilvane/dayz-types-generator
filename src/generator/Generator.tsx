@@ -137,12 +137,12 @@ const validationSchema = object().shape({
 const initialValues: any = {
   name: "",
   nominal: null,
-  lifetime: null,
-  restock: null,
+  lifetime: 7200,
+  restock: 1800,
   min: null,
   quantmin: null,
   quantmax: null,
-  cost: null,
+  cost: 100,
   flags: {
     count_in_cargo: false,
     count_in_hoarder: false,
