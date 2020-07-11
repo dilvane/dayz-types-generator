@@ -101,14 +101,8 @@ const customSelectStyles = {
   },
   option: (provided, state) => ({
     ...provided,
-    color: "white",
-    backgroundColor: state.isFocused
-      ? theme.colors.gray[7]
-      : theme.colors.gray[6],
-  }),
-  menu: (provided, state) => ({
-    ...provided,
-    backgroundColor: theme.colors.secondary,
+    color: state.isFocused ? "white" : "black",
+    backgroundColor: state.isFocused ? "black" : "white",
   }),
 };
 

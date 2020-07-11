@@ -257,6 +257,7 @@ export default {
       px: 3,
       borderColor: "gray.7",
       error: {
+        bg: "white",
         mb: 2,
         px: 3,
         ...focusError,

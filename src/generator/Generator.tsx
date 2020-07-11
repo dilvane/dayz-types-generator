@@ -1,8 +1,10 @@
 import { TableUi } from "components";
 import { TextField, SelectField, CheckField } from "fields";
 import { Form, Formik } from "formik";
-import React, { useMemo, useState } from "react";
-import { Grid, Flex, Button, Box, Label } from "theme-ui";
+import { useLocalStorage } from "hooks";
+import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
+import React, { useMemo, useState, useEffect } from "react";
+import { Grid, Flex, Button, Box, Label, Text } from "theme-ui";
 import { object, string, number, array, boolean } from "yup";
 
 const templateRoot = (
@@ -43,8 +45,8 @@ const templateType = ({
         count_in_player="${flags.count_in_player ? "1" : "0"}" 
         crafted="${flags.crafted ? "1" : "0"}" 
         deloot="${flags.deloot ? "1" : "0"}" />
-      <category name="${category ? "1" : "0"}"/>
-      ${tag.map((t) => `<tag name="${t.value}"/>`)}
+      <category name="${category.value}"/>
+      <tag name="${tag.value}"/>
       ${usage.map((u) => `<usage name="${u.value}"/>`)}
       ${value.map((v) => `<usage name="${v.value}"/>`)}
   </type>
@@ -52,13 +54,13 @@ const templateType = ({
 
 const validationSchema = object().shape({
   name: string().required(),
-  nominal: number(),
-  lifetime: number(),
-  restock: number(),
-  min: number(),
-  quantmin: number(),
-  quantmax: number(),
-  cost: number(),
+  nominal: number().required(),
+  lifetime: number().required(),
+  restock: number().required(),
+  min: number().required(),
+  quantmin: number().required(),
+  quantmax: number().required(),
+  cost: number().required(),
   flags: object().shape({
     count_in_cargo: boolean(),
     count_in_hoarder: boolean(),
@@ -68,14 +70,23 @@ const validationSchema = object().shape({
     deloot: boolean(),
   }),
   category: object().shape({
-    value: string(),
-    label: string(),
+    value: string().required(),
+    label: string().required(),
   }),
-  tag: array().of(object().shape({ value: string(), label: string() })),
-  usage: array().of(object().shape({ value: string(), label: string() })),
-  value: array().of(object().shape({ value: string(), label: string() })),
+  tag: object()
+    .shape({ value: string().required(), label: string().required() })
+    .required(),
+  usage: array()
+    .of(
+      object().shape({ value: string().required(), label: string().required() })
+    )
+    .required(),
+  value: array()
+    .of(
+      object().shape({ value: string().required(), label: string().required() })
+    )
+    .required(),
 });
-
 const initialValues: any = {
   name: "",
   nominal: 40,
@@ -94,7 +105,7 @@ const initialValues: any = {
     deloot: false,
   },
   category: { value: "clothes", label: "Clothes" },
-  tag: [{ value: "shelves", label: "Shelves" }],
+  tag: { value: "shelves", label: "Shelves" },
   usage: [{ value: "Coast", label: "Coast" }],
   value: [{ value: "Tier1", label: "Tier1" }],
 };
@@ -137,15 +148,172 @@ const values = [
   { value: "Tier4", label: "Tier4" },
 ];
 
-export const Generator = () => {
-  const [data, setData] = useState<any>([]);
+const exportTypes = (data) => {
+  const types = data.map((i) => templateType(i)).join("");
+  const content = templateRoot(types);
+  saveData(content, "types.xml");
+};
 
-  const generateCode = () => {
-    const types = data.map((i) => templateType(i)).join("");
-    // eslint-disable-next-line no-console
-    console.log(templateRoot(types));
-    return templateRoot(types);
-  };
+const saveData = (content, fileName) => {
+  var a: any = document.createElement("a");
+  document.body.appendChild(a);
+  a.style = "display: none";
+
+  const blob = new Blob([content], { type: "text/plain" });
+  const url = window.URL.createObjectURL(blob);
+  a.href = url;
+  a.download = fileName;
+  a.click();
+  window.URL.revokeObjectURL(url);
+};
+
+const generateId = () => {
+  return "#" + Math.random().toString(36).substr(2, 9);
+};
+
+const TypesForm = ({ onSubmit, action, initialValues, id }) => (
+  <Formik
+    validateOnMount={false}
+    initialValues={initialValues}
+    validationSchema={validationSchema}
+    onSubmit={onSubmit}>
+    {({ isValid }) => {
+      return (
+        <Form autoComplete="off" noValidate={true} id={id}>
+          <Flex
+            sx={{
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              px: 4,
+            }}>
+            <fieldset disabled={false} style={{ border: "none", padding: 0 }}>
+              <TextField label="Name" name="name" required />
+              <Flex>
+                <Box sx={{ width: "100%", pr: "2" }}>
+                  <TextField
+                    label="Nominal"
+                    name="nominal"
+                    required
+                    type="number"
+                  />
+                </Box>
+                <Box sx={{ width: "100%" }}>
+                  <TextField
+                    label="Lifetime"
+                    name="lifetime"
+                    required
+                    type="number"
+                  />
+                </Box>
+              </Flex>
+              <Flex>
+                <Box sx={{ width: "100%", pr: "2" }}>
+                  <TextField
+                    label="Restock"
+                    name="restock"
+                    required
+                    type="number"
+                  />
+                </Box>
+                <Box sx={{ width: "100%" }}>
+                  <TextField label="Min" name="min" required type="number" />
+                </Box>
+              </Flex>
+              <Flex>
+                <Box sx={{ width: "100%", pr: "2" }}>
+                  <TextField
+                    label="Quantmin"
+                    name="quantmin"
+                    required
+                    type="number"
+                  />
+                </Box>
+                <Box sx={{ width: "100%" }}>
+                  <TextField
+                    label="Quantmax"
+                    name="quantmax"
+                    required
+                    type="number"
+                  />
+                </Box>
+              </Flex>
+
+              <TextField label="Cost" name="cost" required type="number" />
+              <Flex sx={{ flexDirection: "column" }}>
+                <Label>Flags</Label>
+                <Flex>
+                  <CheckField
+                    label="count_in_cargo"
+                    name="flags.count_in_cargo"
+                    required
+                  />
+                  <CheckField
+                    label="count_in_hoarder"
+                    name="flags.count_in_hoarder"
+                    required
+                  />
+                </Flex>
+                <Flex>
+                  <CheckField
+                    label="count_in_map"
+                    name="flags.count_in_map"
+                    required
+                  />
+                  <CheckField
+                    label="count_in_player"
+                    name="flags.count_in_player"
+                    required
+                  />
+                </Flex>
+                <Flex>
+                  <CheckField label="crafted" name="flags.crafted" required />
+                  <CheckField label="deloot" name="flags.deloot" required />
+                </Flex>
+              </Flex>
+              <SelectField
+                placeholder=""
+                label="Category"
+                name="category"
+                required
+                options={categories}
+              />
+              <SelectField
+                placeholder=""
+                label="Tag"
+                name="tag"
+                required
+                options={tags}
+              />
+              <SelectField
+                placeholder=""
+                label="Usage"
+                name="usage"
+                required
+                options={usages}
+                isMulti
+              />
+              <SelectField
+                placeholder=""
+                label="Value"
+                name="value"
+                required
+                options={values}
+                isMulti
+              />
+            </fieldset>
+            {action}
+          </Flex>
+        </Form>
+      );
+    }}
+  </Formik>
+);
+
+export const Generator = () => {
+  const [store, setStoreData] = useLocalStorage("types", []);
+  const [data, setData] = useState<any>(store);
+  const [selectedRow, setSelectedRow] = useState<any>({});
+  const [toDeleteRow, setToDeleteRow] = useState<any>({});
 
   const columns = useMemo(
     () => [
@@ -203,8 +371,7 @@ export const Generator = () => {
           {
             Header: "Tag",
             accessor: "tag",
-            Cell: ({ row }) =>
-              row.original.tag.map((tag) => tag.label).join(", "),
+            Cell: ({ row }) => row.original.tag.label,
           },
           {
             Header: "Category",
@@ -223,183 +390,79 @@ export const Generator = () => {
             Cell: ({ row }) =>
               row.original.value.map((value) => value.label).join(", "),
           },
+          {
+            Header: "",
+            id: "actions",
+            Cell: ({ row }) => (
+              <Flex>
+                <Button
+                  type="button"
+                  mr={2}
+                  variant="small"
+                  onClick={() => setSelectedRow(row.original)}>
+                  Edit
+                </Button>
+                <Button
+                  type="button"
+                  variant="small.danger"
+                  onClick={() => setToDeleteRow(row.original)}>
+                  Remove
+                </Button>
+              </Flex>
+            ),
+          },
         ],
       },
     ],
     []
   );
 
+  useEffect(() => {
+    setStoreData(data);
+  }, [setStoreData, data]);
+
+  const onSubmitAdd = (values) => {
+    const id = generateId();
+    setData([{ id, ...values }, ...data]);
+  };
+
+  const onSubmitEdit = (id) => (values) => {
+    const items = data.map((item) => {
+      if (item.id === id) {
+        return { id, ...values };
+      }
+
+      return item;
+    });
+    setData(items);
+    setSelectedRow(null);
+  };
+
+  const onCloseModal = () => {
+    setSelectedRow(null);
+    setToDeleteRow(null);
+  };
+
+  const onRemove = () => {
+    const items = data.filter((item) => item.id !== toDeleteRow.id);
+    setData(items);
+    setSelectedRow(null);
+    setToDeleteRow(null);
+  };
+
   return (
     <>
       <Grid sx={{ gridArea: "Form", bg: "secondary", overflowY: "auto" }}>
-        <Formik
-          validateOnMount={false}
+        <TypesForm
+          id="add"
+          onSubmit={onSubmitAdd}
           initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
-            setData([values, ...data]);
-          }}>
-          {({ isValid }) => {
-            return (
-              <Form autoComplete="off" noValidate={true}>
-                <Flex
-                  sx={{
-                    flexDirection: "column",
-                    justifyContent: "flex-end",
-                    px: 4,
-                  }}>
-                  <fieldset
-                    disabled={false}
-                    style={{ border: "none", padding: 0 }}>
-                    <TextField label="Name" name="name" required />
-                    <Flex>
-                      <Box pr="2">
-                        <TextField
-                          label="Nominal"
-                          name="nominal"
-                          required
-                          type="number"
-                        />
-                      </Box>
-                      <Box>
-                        <TextField
-                          label="Lifetime"
-                          name="lifetime"
-                          required
-                          type="number"
-                        />
-                      </Box>
-                    </Flex>
-                    <Flex>
-                      <Box pr="2">
-                        <TextField
-                          label="Restock"
-                          name="restock"
-                          required
-                          type="number"
-                        />
-                      </Box>
-                      <Box>
-                        <TextField
-                          label="Min"
-                          name="min"
-                          required
-                          type="number"
-                        />
-                      </Box>
-                    </Flex>
-                    <Flex>
-                      <Box pr="2">
-                        <TextField
-                          label="Quantmin"
-                          name="quantmin"
-                          required
-                          type="number"
-                        />
-                      </Box>
-                      <Box>
-                        <TextField
-                          label="Quantmax"
-                          name="quantmax"
-                          required
-                          type="number"
-                        />
-                      </Box>
-                    </Flex>
-
-                    <TextField
-                      label="Cost"
-                      name="cost"
-                      required
-                      type="number"
-                    />
-                    <Flex sx={{ flexDirection: "column" }}>
-                      <Label>Flags</Label>
-                      <Flex>
-                        <CheckField
-                          label="count_in_cargo"
-                          name="flags.count_in_cargo"
-                          required
-                        />
-                        <CheckField
-                          label="count_in_hoarder"
-                          name="flags.count_in_hoarder"
-                          required
-                        />
-                      </Flex>
-                      <Flex>
-                        <CheckField
-                          label="count_in_map"
-                          name="flags.count_in_map"
-                          required
-                        />
-                        <CheckField
-                          label="count_in_player"
-                          name="flags.count_in_player"
-                          required
-                        />
-                      </Flex>
-                      <Flex>
-                        <CheckField
-                          label="crafted"
-                          name="flags.crafted"
-                          required
-                        />
-                        <CheckField
-                          label="deloot"
-                          name="flags.deloot"
-                          required
-                        />
-                      </Flex>
-                    </Flex>
-                    <SelectField
-                      placeholder=""
-                      label="Category"
-                      name="category"
-                      required
-                      options={categories}
-                    />
-                    <SelectField
-                      placeholder=""
-                      label="Tag"
-                      name="tag"
-                      required
-                      options={tags}
-                      isMulti
-                    />
-                    <SelectField
-                      placeholder=""
-                      label="Usage"
-                      name="usage"
-                      required
-                      options={usages}
-                      isMulti
-                    />
-                    <SelectField
-                      placeholder=""
-                      label="Value"
-                      name="value"
-                      required
-                      options={values}
-                      isMulti
-                    />
-                  </fieldset>
-                  <Button mt={2} variant="primary" type="submit">
-                    Add New
-                  </Button>
-                  <Button
-                    mt={4}
-                    variant="primary"
-                    disabled={data.length === 0}
-                    type="button"
-                    onClick={generateCode}>
-                    Generate Code
-                  </Button>
-                </Flex>
-              </Form>
-            );
-          }}
-        </Formik>
+          action={
+            <Button mt={2} variant="primary" type="submit">
+              Add New
+            </Button>
+          }
+        />
       </Grid>
       <Grid sx={{ gridArea: "Table", overflowY: "auto" }}>
         <TableUi
@@ -408,6 +471,53 @@ export const Generator = () => {
           clickedRow={true}
           onClick={() => null}
         />
+      </Grid>
+      <Grid
+        sx={{ gridArea: "TableActions", py: 2, pl: 2, pr: 6, bg: "gray.2" }}>
+        <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
+          <Text>
+            <b>Total Types</b>: {data.length}
+          </Text>
+          <Box>
+            <Modal isOpen={selectedRow?.id} onRequestClose={onCloseModal}>
+              <ModalHeader
+                title={`Edit ${selectedRow?.name}`}
+                onRequestClose={onCloseModal}
+              />
+              <ModalBody>
+                <TypesForm
+                  id="edit"
+                  onSubmit={onSubmitEdit(selectedRow?.id)}
+                  initialValues={selectedRow}
+                  action={null}
+                />
+              </ModalBody>
+              <ModalFooter>
+                <Button mt={2} variant="primary" type="submit" form="edit">
+                  Update
+                </Button>
+              </ModalFooter>
+            </Modal>
+            <Modal isOpen={toDeleteRow?.id} onRequestClose={onCloseModal}>
+              <ModalHeader
+                title={`Remove ${toDeleteRow?.name}?`}
+                onRequestClose={onCloseModal}
+              />
+
+              <ModalFooter>
+                <Button mt={2} variant="danger" onClick={onRemove}>
+                  Remove
+                </Button>
+              </ModalFooter>
+            </Modal>
+          </Box>
+          <Button
+            variant="primary"
+            type="button"
+            onClick={() => exportTypes(data)}>
+            Export Types
+          </Button>
+        </Flex>
       </Grid>
     </>
   );

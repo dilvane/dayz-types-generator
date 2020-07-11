@@ -9,10 +9,11 @@ const Container = styled(Grid)`
   width: 100%;
   gap: 0;
   grid-template-columns: 400px 1fr;
-  grid-template-rows: auto 1fr 30px;
+  grid-template-rows: auto 1fr auto 30px;
   grid-template-areas:
     "Navbar Table"
     "Form Table"
+    "Form TableActions"
     "Footer Footer";
 `;
 
