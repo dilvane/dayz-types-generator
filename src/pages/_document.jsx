@@ -20,10 +20,13 @@ class IndexPage extends Document {
           <meta name="twitter:card" value="Dayz Types Generator" />
           <meta property="og:title" content="Dayz Types Generator" />
           <meta property="og:type" content="website" />
-          <meta property="og:url" content="" />
+          <meta
+            property="og:url"
+            content="https://dayz-types-generator.vercel.app"
+          />
           <meta
             property="og:image"
-            content={`static/TypesGenerator_DAYZ_White_300x300.png`}
+            content={`https://dayz-types-generator.vercel.app/static/TypesGenerator_DAYZ_White_300x300.png`}
           />
           <meta property="og:description" content="Dayz Types Generator" />
           <link
