@@ -16,6 +16,7 @@
     }
   },
   "dependencies": {
+    "@sentry/react": "^5.19.1",
     "emotion-theming": "^10.0.27",
     "formik": "^2.1.4",
     "next": "^9.4.4",

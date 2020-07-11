@@ -1,5 +1,38 @@
+import * as Sentry from "@sentry/react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import React from "react";
+
+const getGtag = () => {
+  if (process.env.NODE_ENV !== "production") {
+    return "";
+  }
+
+  return (
+    <>
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=UA-47739782-12"></script>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'UA-47739782-12');
+              `,
+        }}
+      />
+    </>
+  );
+};
+
+if (process.env.NODE_ENV === "production") {
+  Sentry.init({
+    dsn:
+      "https://16ef9bb60329446b93f3d2676a608b61@o291221.ingest.sentry.io/5329160",
+  });
+}
 
 class IndexPage extends Document {
   static async getInitialProps(ctx) {
@@ -34,6 +67,8 @@ class IndexPage extends Document {
             href="/static/TypesGenerator_DAYZ_White_Favicon.png"
             sizes="32x32"
             type="image/png"></link>
+
+          {getGtag()}
         </Head>
         <body>
           <Main />
