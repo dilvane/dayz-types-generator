@@ -1,0 +1,45 @@
+name: dayz-types-generator
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "v*.*.*"
+
+jobs:
+  lint-tests:
+    name: Lint and Tests
+    runs-on: ubuntu-16.04
+    env:
+      CI: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+
+      - name: Yarn cache
+        uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-yarn-
+
+      - name: Setup Node
+        uses: actions/setup-node@v1.1.0
+        with:
+          version: "12.x"
+
+      - name: Yarn install
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: install
+
+      - name: Yarn lint
+        uses: borales/actions-yarn@v2.0.0
+        with:
+          cmd: lint

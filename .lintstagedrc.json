@@ -1,0 +1,8 @@
+{
+  "**/*.{js,jsx,ts,tsx}": [
+    "eslint --fix",
+    "yarn test -- --bail -- --findRelatedTests",
+    "git add ."
+  ],
+  "**/*.{js,jsx,ts,tsx,yml,json,md}": ["prettier --write", "git add ."]
+}

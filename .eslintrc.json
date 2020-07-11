@@ -1,0 +1,33 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "react-app",
+    "prettier/react",
+    "prettier"
+  ],
+  "plugins": [
+    "import-helpers"
+  ],
+  "rules": {
+    "no-angle-bracket-type-assertion": 0,
+    "import-helpers/order-imports": [
+      "warn",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          "module",
+          [
+            "/^app/",
+            "parent",
+            "sibling",
+            "index"
+          ]
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        }
+      }
+    ]
+  }
+}
