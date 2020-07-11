@@ -1,5 +1,6 @@
+import { alpha } from "@theme-ui/color";
 import React from "react";
-import { Flex } from "theme-ui";
+import { Flex, Spinner } from "theme-ui";
 
 export const Absolute = ({ sx, ...props }: any) => (
   <Flex
