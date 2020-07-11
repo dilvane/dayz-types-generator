@@ -523,7 +523,12 @@ export const Generator = () => {
   const onSubmitEdit = (id) => (values) => {
     const items = data.map((item) => {
       if (item.id === id) {
-        return { id, ...values };
+        if (values.temporaryItem) {
+          const { name, temporaryItem, lifetime, flags } = values;
+          return { id, name, temporaryItem, lifetime, flags };
+        } else {
+          return { id, ...values };
+        }
       }
 
       return item;
