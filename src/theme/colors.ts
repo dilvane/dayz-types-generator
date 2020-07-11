@@ -6,21 +6,18 @@ const gray = [
   "#C0C0C0", //4
   "#BEBEBE", //5
   "#A9A9A9", //6
-  "#808080", //7
+  "#535353", //7
 ];
 
 const colors: any = {
   text: "#37352F",
-  background: "#fff",
-  primary: "#116AB8",
-  secondary: "black",
-  muted: "#f6f6f6",
-  warning: "#D9822B",
-  danger: "#D64540",
+  primary: "#1b1b1b",
+  secondary: "#323232",
   white: "#fff",
-  whiteAlpha: [],
   disabled: "#ccc",
-  success: "#399D6C",
+  success: "#116AB8",
+  warning: "#D9822B",
+  danger: "#de3d42",
   gray,
   modes: {
     dark: {
@@ -28,14 +25,8 @@ const colors: any = {
       background: "#000",
       primary: "#07c",
       secondary: "#30c",
-      muted: "#f6f6f6",
-      warning: "orange",
-      danger: "#D64540",
     },
   },
 };
-
-colors.gray[700] = colors.gray[7];
-colors.whiteAlpha[900] = "white";
 
 export { colors };

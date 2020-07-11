@@ -10,7 +10,6 @@ function Index() {
       <Layout>
         <Navbar />
         <Generator />
-        <Footer />
       </Layout>
     </DTGContext.Provider>
   );

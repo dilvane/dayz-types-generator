@@ -1,5 +1,4 @@
 import { darken } from "@theme-ui/color";
-import { withTheme } from "emotion-theming";
 
 import { buttons } from "./buttons";
 import { colors } from "./colors";
@@ -15,8 +14,9 @@ const focus = {
 
 const disabled = {
   ":disabled": {
+    bg: "gray.6",
     borderColor: "disabled",
-    color: "gray.7",
+    color: "gray.6",
   },
 };
 
@@ -177,15 +177,13 @@ export default {
       width: "100%",
       borderCollapse: "separate",
       borderSpacing: 0,
-      border: "1px solid",
       borderColor: "gray.1",
       boxShadow:
         "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
       th: {
+        color: "white",
         fontSize: 1,
-        bg: "gray.0",
-        backgroundImage: (t) =>
-          `linear-gradient(${t.colors.white}, ${darken("white", 0.1)(t)})`,
+        bg: "primary",
         position: "sticky",
         top: "0",
         py: 3,
@@ -193,12 +191,14 @@ export default {
         textAlign: "left",
       },
       tr: {
-        bg: "white",
+        color: "white",
+        border: "none",
+        bg: "gray.7",
         ":nth-of-type(even)": {
-          bg: "gray.0",
+          bg: "secondary",
         },
         ":hover": {
-          bg: "gray.1",
+          bg: "primary",
         },
       },
       td: {
@@ -206,9 +206,6 @@ export default {
         py: 3,
         px: 2,
         textAlign: "left",
-        borderBottomStyle: "solid",
-        borderBottomColor: "gray.1",
-        borderBottomWidth: 1,
       },
     },
     img: {
@@ -253,13 +250,15 @@ export default {
   forms: {
     input: {
       bg: "white",
-      mb: 2,
-      px: 3,
+      mb: 1,
+      px: 2,
+      py: 1,
       borderColor: "gray.7",
       error: {
         bg: "white",
-        mb: 2,
-        px: 3,
+        mb: 1,
+        px: 2,
+        py: 1,
         ...focusError,
         borderColor: "danger",
       },
@@ -275,6 +274,7 @@ export default {
       ...disabled,
     },
     label: {
+      fontSize: 1,
       color: "white",
       mb: 1,
       error: { mb: 1, color: "danger", fontWeight: "heading" },

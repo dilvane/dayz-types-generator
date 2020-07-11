@@ -11,8 +11,8 @@ const button = {
   outline: "none",
   borderColor: "rgb(216, 216, 216) rgb(209, 209, 209) rgb(186, 186, 186)",
   ":disabled": {
-    color: "disabled",
-    bg: "muted",
+    color: "white",
+    bg: "gray.6",
     cursor: "not-allowed",
     backgroundImage: "none",
     ":hover": {
@@ -29,13 +29,13 @@ const primary = {
   ...button,
   color: "white",
   backgroundImage: (t) =>
-    `linear-gradient(${lighten("primary", 0.1)(t)}, ${lighten(
-      "primary",
+    `linear-gradient(${lighten("success", 0.1)(t)}, ${lighten(
+      "success",
       0
     )(t)})`,
   ":hover": {
     backgroundImage: (t) =>
-      `linear-gradient(${t.colors.primary}, ${t.colors.primary})`,
+      `linear-gradient(${t.colors.success}, ${t.colors.success})`,
   },
 };
 
@@ -74,14 +74,7 @@ const warning = {
 const danger = {
   ...button,
   color: "white",
-  boxShadow:
-    "rgba(67, 90, 111, 0.3) 0px 0px 0px 1px inset, rgba(67, 90, 111, 0.06) 0px -1px 1px 0px inset;",
-  backgroundImage: (t) =>
-    `linear-gradient(${lighten("danger", 0.1)(t)}, ${lighten("danger", 0)(t)})`,
-  ":hover": {
-    backgroundImage: (t) =>
-      `linear-gradient(${t.colors.danger}, ${t.colors.danger})`,
-  },
+  bg: "danger",
 };
 
 const small = { fontSize: 0, py: 1, px: 2 };

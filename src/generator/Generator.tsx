@@ -5,7 +5,7 @@ import { useLocalStorage } from "hooks";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
 import React, { useMemo, useState, useEffect } from "react";
 import { Grid, Flex, Button, Box, Label, Text } from "theme-ui";
-import { object, string, number, array, boolean } from "yup";
+import { object, string, number, array, boolean, mixed } from "yup";
 
 const templateRoot = (
   content
@@ -52,15 +52,58 @@ const templateType = ({
   </type>
 `;
 
+const templateTemporaryType = ({ name, lifetime, flags }) => `
+  <type name="${name}">
+      <lifetime>${lifetime}</lifetime>
+      <flags 
+        count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" 
+        count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" 
+        count_in_map="${flags.count_in_map ? "1" : "0"}" 
+        count_in_player="${flags.count_in_player ? "1" : "0"}" 
+        crafted="${flags.crafted ? "1" : "0"}" 
+        deloot="${flags.deloot ? "1" : "0"}" />
+  </type>
+`;
+
+const defaultShape = object().shape({
+  value: string().required(),
+  label: string().required(),
+});
+
 const validationSchema = object().shape({
+  temporaryItem: boolean(),
   name: string().required(),
-  nominal: number().required(),
+  nominal: mixed().when("temporaryItem", {
+    is: false,
+    then: number().required(),
+    otherwise: number().nullable(),
+  }),
   lifetime: number().required(),
-  restock: number().required(),
-  min: number().required(),
-  quantmin: number().required(),
-  quantmax: number().required(),
-  cost: number().required(),
+  restock: mixed().when("temporaryItem", {
+    is: false,
+    then: number().required(),
+    otherwise: number().nullable(),
+  }),
+  min: mixed().when("temporaryItem", {
+    is: false,
+    then: number().required(),
+    otherwise: number().nullable(),
+  }),
+  quantmin: mixed().when("temporaryItem", {
+    is: false,
+    then: number().required(),
+    otherwise: number().nullable(),
+  }),
+  quantmax: mixed().when("temporaryItem", {
+    is: false,
+    then: number().required(),
+    otherwise: number().nullable(),
+  }),
+  cost: mixed().when("temporaryItem", {
+    is: false,
+    then: number().required(),
+    otherwise: number().nullable(),
+  }),
   flags: object().shape({
     count_in_cargo: boolean(),
     count_in_hoarder: boolean(),
@@ -69,24 +112,28 @@ const validationSchema = object().shape({
     crafted: boolean(),
     deloot: boolean(),
   }),
-  category: object().shape({
-    value: string().required(),
-    label: string().required(),
+  category: mixed().when("temporaryItem", {
+    is: false,
+    then: defaultShape,
+    otherwise: string().nullable(),
   }),
-  tag: object()
-    .shape({ value: string().required(), label: string().required() })
-    .required(),
-  usage: array()
-    .of(
-      object().shape({ value: string().required(), label: string().required() })
-    )
-    .required(),
-  value: array()
-    .of(
-      object().shape({ value: string().required(), label: string().required() })
-    )
-    .required(),
+  tag: mixed().when("temporaryItem", {
+    is: false,
+    then: defaultShape.required(),
+    otherwise: string().nullable(),
+  }),
+  usage: mixed().when("temporaryItem", {
+    is: false,
+    then: array().of(defaultShape).required(),
+    otherwise: string().nullable(),
+  }),
+  value: mixed().when("temporaryItem", {
+    is: false,
+    then: array().of(defaultShape).required(),
+    otherwise: string().nullable(),
+  }),
 });
+
 const initialValues: any = {
   name: "",
   nominal: 40,
@@ -141,7 +188,7 @@ const usages = [
   { value: "Village", label: "Village" },
 ];
 
-const values = [
+const valuesItems = [
   { value: "Tier1", label: "Tier1" },
   { value: "Tier2", label: "Tier2" },
   { value: "Tier3", label: "Tier3" },
@@ -149,7 +196,12 @@ const values = [
 ];
 
 const exportTypes = (data) => {
-  const types = data.map((i) => templateType(i)).join("");
+  if (data.length === 0) {
+    return;
+  }
+  const types = data
+    .map((i) => (i.temporaryItem ? templateTemporaryType(i) : templateType(i)))
+    .join("");
   const content = templateRoot(types);
   saveData(content, "types.xml");
 };
@@ -177,7 +229,7 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
     initialValues={initialValues}
     validationSchema={validationSchema}
     onSubmit={onSubmit}>
-    {({ isValid }) => {
+    {({ values, isValid }) => {
       return (
         <Form autoComplete="off" noValidate={true} id={id}>
           <Flex
@@ -189,12 +241,20 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
             <fieldset disabled={false} style={{ border: "none", padding: 0 }}>
               <TextField label="Name" name="name" required />
               <Flex>
+                <CheckField
+                  label="Is a temporary item?"
+                  name="temporaryItem"
+                  required
+                />
+              </Flex>
+              <Flex>
                 <Box sx={{ width: "100%", pr: "2" }}>
                   <TextField
                     label="Nominal"
                     name="nominal"
                     required
                     type="number"
+                    disabled={values.temporaryItem}
                   />
                 </Box>
                 <Box sx={{ width: "100%" }}>
@@ -213,10 +273,17 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     name="restock"
                     required
                     type="number"
+                    disabled={values.temporaryItem}
                   />
                 </Box>
                 <Box sx={{ width: "100%" }}>
-                  <TextField label="Min" name="min" required type="number" />
+                  <TextField
+                    label="Min"
+                    name="min"
+                    required
+                    type="number"
+                    disabled={values.temporaryItem}
+                  />
                 </Box>
               </Flex>
               <Flex>
@@ -226,6 +293,7 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     name="quantmin"
                     required
                     type="number"
+                    disabled={values.temporaryItem}
                   />
                 </Box>
                 <Box sx={{ width: "100%" }}>
@@ -234,11 +302,18 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     name="quantmax"
                     required
                     type="number"
+                    disabled={values.temporaryItem}
                   />
                 </Box>
               </Flex>
 
-              <TextField label="Cost" name="cost" required type="number" />
+              <TextField
+                label="Cost"
+                name="cost"
+                required
+                type="number"
+                disabled={values.temporaryItem}
+              />
               <Flex sx={{ flexDirection: "column" }}>
                 <Label>Flags</Label>
                 <Flex>
@@ -276,6 +351,7 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 name="category"
                 required
                 options={categories}
+                isDisabled={values.temporaryItem}
               />
               <SelectField
                 placeholder=""
@@ -283,6 +359,7 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 name="tag"
                 required
                 options={tags}
+                isDisabled={values.temporaryItem}
               />
               <SelectField
                 placeholder=""
@@ -290,6 +367,7 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 name="usage"
                 required
                 options={usages}
+                isDisabled={values.temporaryItem}
                 isMulti
               />
               <SelectField
@@ -297,7 +375,8 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 label="Value"
                 name="value"
                 required
-                options={values}
+                options={valuesItems}
+                isDisabled={values.temporaryItem}
                 isMulti
               />
             </fieldset>
@@ -328,30 +407,37 @@ export const Generator = () => {
           {
             Header: "Nominal",
             accessor: "nominal",
+            Cell: ({ row }) => row.original.nominal || "",
           },
           {
             Header: "Lifetime",
             accessor: "lifetime",
+            Cell: ({ row }) => row.original.lifetime || "",
           },
           {
             Header: "Restock",
             accessor: "restock",
+            Cell: ({ row }) => row.original.restock || "",
           },
           {
             Header: "Min",
             accessor: "min",
+            Cell: ({ row }) => row.original.min || "",
           },
           {
             Header: "Quantmin",
             accessor: "quantmin",
+            Cell: ({ row }) => row.original.quantmin || "",
           },
           {
             Header: "Quantmax",
             accessor: "quantmax",
+            Cell: ({ row }) => row.original.quantmax || "",
           },
           {
             Header: "Cost",
             accessor: "cost",
+            Cell: ({ row }) => row.original.cost || "",
           },
           {
             Header: "Flags",
@@ -366,29 +452,29 @@ export const Generator = () => {
                 row.original.flags.deloot && "deloot",
               ]
                 .filter((i) => i)
-                .join(", "),
+                .join(", ") || "",
           },
           {
             Header: "Tag",
             accessor: "tag",
-            Cell: ({ row }) => row.original.tag.label,
+            Cell: ({ row }) => row.original.tag?.label || "",
           },
           {
             Header: "Category",
             accessor: "category",
-            Cell: ({ row }) => row.original.category.label,
+            Cell: ({ row }) => row.original.category?.label || "",
           },
           {
             Header: "Usage",
             accessor: "usage",
             Cell: ({ row }) =>
-              row.original.usage.map((usage) => usage.label).join(", "),
+              row.original.usage?.map((usage) => usage.label).join(", ") || "",
           },
           {
             Header: "Value",
             accessor: "value",
             Cell: ({ row }) =>
-              row.original.value.map((value) => value.label).join(", "),
+              row.original.value?.map((value) => value.label).join(", ") || "",
           },
           {
             Header: "",
@@ -405,7 +491,10 @@ export const Generator = () => {
                 <Button
                   type="button"
                   variant="small.danger"
-                  onClick={() => setToDeleteRow(row.original)}>
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    setToDeleteRow(row.original);
+                  }}>
                   Remove
                 </Button>
               </Flex>
@@ -423,7 +512,12 @@ export const Generator = () => {
 
   const onSubmitAdd = (values) => {
     const id = generateId();
-    setData([{ id, ...values }, ...data]);
+    if (values.temporaryItem) {
+      const { name, temporaryItem, lifetime, flags } = values;
+      setData([{ id, name, temporaryItem, lifetime, flags }, ...data]);
+    } else {
+      setData([{ id, ...values }, ...data]);
+    }
   };
 
   const onSubmitEdit = (id) => (values) => {
@@ -443,7 +537,7 @@ export const Generator = () => {
     setToDeleteRow(null);
   };
 
-  const onRemove = () => {
+  const onRemove = (event) => {
     const items = data.filter((item) => item.id !== toDeleteRow.id);
     setData(items);
     setSelectedRow(null);
@@ -452,28 +546,41 @@ export const Generator = () => {
 
   return (
     <>
-      <Grid sx={{ gridArea: "Form", bg: "secondary", overflowY: "auto" }}>
+      <Grid
+        sx={{
+          gridArea: "Form",
+          bg: "primary",
+          overflowY: "auto",
+          borderRight: "2px solid",
+          borderColor: "gray.7",
+        }}>
         <TypesForm
           id="add"
           onSubmit={onSubmitAdd}
           initialValues={initialValues}
           action={
-            <Button mt={2} variant="primary" type="submit">
+            <Button mt={2} mb={3} variant="primary" type="submit">
               Add New
             </Button>
           }
         />
       </Grid>
-      <Grid sx={{ gridArea: "Table", overflowY: "auto" }}>
+      <Grid sx={{ gridArea: "Table", overflowY: "auto", bg: "primary" }}>
         <TableUi
           columns={columns}
           data={data}
           clickedRow={true}
-          onClick={() => null}
+          onClick={(row) => setSelectedRow(row)}
         />
       </Grid>
       <Grid
-        sx={{ gridArea: "TableActions", py: 2, pl: 2, pr: 6, bg: "gray.2" }}>
+        sx={{
+          gridArea: "TableActions",
+          py: 2,
+          px: 3,
+          bg: "gray.7",
+          color: "white",
+        }}>
         <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <Text>
             <b>Total Types</b>: {data.length}

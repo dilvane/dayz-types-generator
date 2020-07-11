@@ -8,14 +8,14 @@ export const ModalHeader = ({ title, onRequestClose }) => (
     sx={{
       p: 4,
       justifyContent: "space-between",
-      bg: "black",
+      bg: "primary",
       color: "white",
       fontSize: 4,
     }}>
     <Box>
       <Text>{title}</Text>
     </Box>
-    <Box data-testid="modal-close" onClick={onRequestClose}>
+    <Box onClick={onRequestClose} sx={{ cursor: "pointer" }}>
       X
     </Box>
   </Flex>
@@ -27,7 +27,7 @@ export const ModalBody = ({ sx = {}, ...props }) => (
     sx={{
       overflow: "auto",
       flex: "1 1 auto",
-      bg: "black",
+      bg: "primary",
       ...sx,
     }}
   />
@@ -40,7 +40,7 @@ export const ModalFooter = ({ sx = {}, ...props }) => (
       px: 4,
       py: 3,
       justifyContent: "flex-end",
-      bg: "black",
+      bg: "primary",
       ...sx,
     }}
   />
@@ -92,7 +92,7 @@ export const Modal = ({ children, ...props }: ModalProps) => {
       />
       <ModalBase
         bodyOpenClassName="modal-open"
-        closeTimeoutMS={50}
+        closeTimeoutMS={200}
         style={{
           overlay: {
             position: "fixed",
@@ -100,7 +100,7 @@ export const Modal = ({ children, ...props }: ModalProps) => {
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(0,0,0,0.9)",
+            backgroundColor: "rgba(0,0,0,0.8)",
             zIndex: 100,
           },
           content: {

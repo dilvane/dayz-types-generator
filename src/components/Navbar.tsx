@@ -1,14 +1,13 @@
 import styled from "@emotion/styled";
 import css from "@styled-system/css";
 import React from "react";
-import { Grid, Flex } from "theme-ui";
+import { Grid, Flex, Image } from "theme-ui";
 
 const Content = styled(Grid)`
   grid-area: Navbar;
 
   ${css({
-    bg: "secondary",
-    p: 3,
+    bg: "primary",
     color: "white",
     fontSize: 5,
   })}
@@ -17,8 +16,18 @@ const Content = styled(Grid)`
 export const Navbar = () => {
   return (
     <Content>
-      <Flex sx={{ alignItems: "center", justifyContent: "center" }}>
-        Dayz Types Generator
+      <Flex
+        sx={{
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+          borderRight: "2px solid",
+          borderColor: "gray.7",
+        }}>
+        <Image
+          src="static/TypesGenerator_DAYZ_White_300x300.png"
+          sx={{ width: "200px", height: "200px" }}
+        />
       </Flex>
     </Content>
   );

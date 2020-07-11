@@ -2,5 +2,5 @@ import React from "react";
 import { Box } from "theme-ui";
 
 export const Block = ({ sx, ...props }: any) => (
-  <Box sx={{ position: "relative", width: "100%", sx }} {...props} />
+  <Box sx={{ position: "relative", width: "100%", mb: 1, sx }} {...props} />
 );

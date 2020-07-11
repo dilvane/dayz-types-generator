@@ -92,7 +92,7 @@ const customSelectStyles = {
       outline: 0,
       borderColor,
       boxShadow: state.isFocused ? "0 0 0 0.2rem rgba(0,119,204,.25)" : "none",
-      backgroundColor: "white",
+      backgroundColor: state.isDisabled ? theme.colors.gray[5] : "white",
       padding: "0px",
       ":hover": {
         borderColor,
@@ -103,6 +103,27 @@ const customSelectStyles = {
     ...provided,
     color: state.isFocused ? "white" : "black",
     backgroundColor: state.isFocused ? "black" : "white",
+  }),
+  singleValue: (provided, state) => ({
+    ...provided,
+    color: state.isDisabled ? theme.colors.gray[5] : provided.color,
+    backgroundColor: state.isDisabled
+      ? theme.colors.gray[5]
+      : provided.backgroundColor,
+  }),
+  multiValueLabel: (provided, state) => ({
+    ...provided,
+    color: state.isDisabled ? theme.colors.gray[5] : provided.color,
+    backgroundColor: state.isDisabled
+      ? theme.colors.gray[5]
+      : provided.backgroundColor,
+  }),
+  multiValueRemove: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isDisabled
+      ? theme.colors.gray[5]
+      : provided.backgroundColor,
+    color: state.isDisabled ? theme.colors.gray[5] : provided.color,
   }),
 };
 
@@ -191,8 +212,10 @@ export const CheckField = ({ label, ...props }: any) => {
   return (
     <Block>
       <Label variant={hasError ? "label.error" : "label"}>
-        <Checkbox {...field} {...props} defaultChecked={field.value} />
-        {label}
+        <Flex sx={{ alignItems: "center" }}>
+          <Checkbox {...field} {...props} defaultChecked={field.value} />
+          {label}
+        </Flex>
       </Label>
     </Block>
   );

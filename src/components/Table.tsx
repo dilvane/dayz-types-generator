@@ -43,7 +43,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
           return (
             <Tr
               {...row.getRowProps()}
-              onClick={() => onClick(row.original.id)}
+              onClick={() => onClick(row.original)}
               sx={{ cursor: clickedRow ? "pointer" : "default" }}>
               {row.cells.map((cell) => {
                 return <Td {...cell.getCellProps()}>{cell.render("Cell")}</Td>;

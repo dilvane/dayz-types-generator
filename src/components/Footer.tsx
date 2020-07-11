@@ -7,7 +7,7 @@ const Content = styled(Grid)`
   grid-area: Footer;
 
   ${css({
-    bg: "secondary",
+    bg: "primary",
     px: 2,
     color: "white",
   })}

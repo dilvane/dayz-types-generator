@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import { css } from "@styled-system/css";
 import { ThemeProvider } from "emotion-theming";
 import React from "react";
 import { theme, GlobalStyles } from "theme";
@@ -8,13 +9,24 @@ const Container = styled(Grid)`
   height: 100%;
   width: 100%;
   gap: 0;
-  grid-template-columns: 400px 1fr;
-  grid-template-rows: auto 1fr auto 30px;
-  grid-template-areas:
-    "Navbar Table"
-    "Form Table"
-    "Form TableActions"
-    "Footer Footer";
+
+  ${css({
+    height: ["auto", null, "100%"],
+    gridTemplateColumns: ["1fr", null, "400px 1fr"],
+    gridTemplateRows: ["1fr", null, "auto 1fr auto"],
+    gridTemplateAreas: [
+      `
+      "Navbar"
+      "Form"
+      "Table"
+      "TableActions"`,
+      null,
+      `
+      "Navbar Table"
+      "Form Table"
+      "Form TableActions"`,
+    ],
+  })}
 `;
 
 export const Layout = ({ children }) => {
