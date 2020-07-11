@@ -31,7 +31,7 @@ class IndexPage extends Document {
           <meta property="og:description" content="Dayz Types Generator" />
           <link
             rel="icon"
-            href="static/TypesGenerator_DAYZ_White_Favicon.png"
+            href="/static/TypesGenerator_DAYZ_White_Favicon.png"
             sizes="32x32"
             type="image/png"></link>
         </Head>
