@@ -61,6 +61,9 @@ const templateSeparator = ({ separator }) => `
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 `;
 
+const templateNameOnly = ({ name }) => `    ${name}
+`;
+
 const defaultShape = object().shape({
   value: string().required(),
   label: string().required(),
@@ -218,6 +221,23 @@ const exportTypes = (data) => {
     .join("");
   const content = templateRoot(types);
   saveData(content, "types.xml");
+};
+
+const exportOnlyNames = (data) => {
+  if (data.length === 0) {
+    return;
+  }
+  const content = data
+    .map((i) => {
+      if (i.separator) {
+        return templateSeparator(i);
+      }
+
+      return templateNameOnly(i);
+    })
+    .join("");
+
+  saveData(content, "names.txt");
 };
 
 const saveData = (content, fileName) => {
@@ -710,7 +730,7 @@ export const Generator = () => {
           gridArea: "TableActions",
           py: 2,
           px: 3,
-          bg: "gray.7",
+          bg: "primary",
           color: "white",
         }}>
         <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
@@ -765,12 +785,21 @@ export const Generator = () => {
               </ModalFooter>
             </Modal>
           </Box>
-          <Button
-            variant="primary"
-            type="button"
-            onClick={() => exportTypes(data)}>
-            Export Types
-          </Button>
+          <Box>
+            <Button
+              variant="primary"
+              type="button"
+              onClick={() => exportOnlyNames(data)}
+              mr="3">
+              Export Only Names
+            </Button>
+            <Button
+              variant="primary"
+              type="button"
+              onClick={() => exportTypes(data)}>
+              Export Types
+            </Button>
+          </Box>
         </Flex>
       </Grid>
     </>
