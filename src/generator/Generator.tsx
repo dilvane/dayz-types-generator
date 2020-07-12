@@ -458,6 +458,7 @@ export const Generator = () => {
   const [data, setData] = useState<any>(store);
   const [selectedRow, setSelectedRow] = useState<any>({});
   const [toDeleteRow, setToDeleteRow] = useState<any>({});
+  const [removeAll, setRemoveAll] = useState<any>(false);
 
   const columns = useMemo(
     () => [
@@ -683,6 +684,11 @@ export const Generator = () => {
     setSelectedRow(null);
   };
 
+  const onRemoveAll = () => {
+    setData([]);
+    setRemoveAll(false);
+  };
+
   return (
     <>
       <Grid
@@ -784,8 +790,29 @@ export const Generator = () => {
                 </Button>
               </ModalFooter>
             </Modal>
+            <Modal
+              isOpen={removeAll}
+              onRequestClose={() => setRemoveAll(false)}>
+              <ModalHeader
+                title={`Remove All Items?`}
+                onRequestClose={() => setRemoveAll(false)}
+              />
+
+              <ModalFooter>
+                <Button mt={2} variant="danger" onClick={onRemoveAll}>
+                  Remove
+                </Button>
+              </ModalFooter>
+            </Modal>
           </Box>
           <Box>
+            <Button
+              variant="danger"
+              type="button"
+              onClick={() => setRemoveAll(true)}
+              mr="3">
+              Remove All
+            </Button>
             <Button
               variant="primary"
               type="button"
