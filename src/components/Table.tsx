@@ -40,6 +40,29 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
       <Tbody {...getTableBodyProps()}>
         {rows.map((row, i) => {
           prepareRow(row);
+          if (row.original.separator) {
+            return (
+              <Tr
+                sx={{
+                  "> td": {
+                    fontSize: 1,
+                    py: 1,
+                    px: 2,
+                    textAlign: "center",
+                    bg: "success",
+                    color: "white",
+                  },
+                }}>
+                <Td colSpan={row.cells.length - 1}>
+                  {"// "}
+                  {row.original.separator}
+                </Td>
+                <Td {...row.cells[row.cells.length - 1].getCellProps()}>
+                  {row.cells[row.cells.length - 1].render("Cell")}
+                </Td>
+              </Tr>
+            );
+          }
           return (
             <Tr
               {...row.getRowProps()}

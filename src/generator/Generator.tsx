@@ -1,5 +1,5 @@
 import { TableUi } from "components";
-import { TextField, SelectField, CheckField } from "fields";
+import { TextField, SelectField, CheckField, TextAreaField } from "fields";
 import { Form, Formik } from "formik";
 import { useLocalStorage } from "hooks";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
@@ -15,6 +15,7 @@ const templateRoot = (
 </types>
 `;
 
+// prettier-ignore
 const templateType = ({
   name,
   nominal,
@@ -30,39 +31,39 @@ const templateType = ({
   tag,
   value,
 }) => `
-  <type name="${name}">
-      <nominal>${nominal}</nominal>
-      <lifetime>${lifetime}</lifetime>
-      <restock>${restock}</restock>
-      <min>${min}</min>
-      <quantmin>${quantmin}</quantmin>
-      <quantmax>${quantmax}</quantmax>
-      <cost>${cost}</cost>
-      <flags 
-        count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" 
-        count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" 
-        count_in_map="${flags.count_in_map ? "1" : "0"}" 
-        count_in_player="${flags.count_in_player ? "1" : "0"}" 
-        crafted="${flags.crafted ? "1" : "0"}" 
-        deloot="${flags.deloot ? "1" : "0"}" />
-      <category name="${category.value}"/>
-      <tag name="${tag.value}"/>
-      ${usage.map((u) => `<usage name="${u.value}"/>`)}
-      ${value.map((v) => `<usage name="${v.value}"/>`)}
-  </type>
+    <type name="${name}">
+        <nominal>${nominal}</nominal>
+        <lifetime>${lifetime}</lifetime>
+        <restock>${restock}</restock>
+        <min>${min}</min>
+        <quantmin>${quantmin}</quantmin>
+        <quantmax>${quantmax}</quantmax>
+        <cost>${cost}</cost>
+        <flags count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" count_in_map="${flags.count_in_map ? "1" : "0"}" count_in_player="${flags.count_in_player ? "1" : "0"}" crafted="${flags.crafted ? "1" : "0"}" deloot="${flags.deloot ? "1" : "0"}" />
+        <category name="${category.value}"/>
+        <tag name="${tag.value}"/>
+        ${usage.map((u) => `<usage name="${u.value}"/>`)}
+        ${value.map((v) => `<usage name="${v.value}"/>`)}
+    </type>
 `;
 
 const templateTemporaryType = ({ name, lifetime, flags }) => `
-  <type name="${name}">
-      <lifetime>${lifetime}</lifetime>
-      <flags 
-        count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" 
-        count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" 
-        count_in_map="${flags.count_in_map ? "1" : "0"}" 
-        count_in_player="${flags.count_in_player ? "1" : "0"}" 
-        crafted="${flags.crafted ? "1" : "0"}" 
-        deloot="${flags.deloot ? "1" : "0"}" />
-  </type>
+    <type name="${name}">
+        <lifetime>${lifetime}</lifetime>
+        <flags 
+          count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" 
+          count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" 
+          count_in_map="${flags.count_in_map ? "1" : "0"}" 
+          count_in_player="${flags.count_in_player ? "1" : "0"}" 
+          crafted="${flags.crafted ? "1" : "0"}" 
+          deloot="${flags.deloot ? "1" : "0"}" />
+    </type>
+`;
+
+const templateSeparator = ({ separator }) => `
+<!--///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //////////// ${separator}
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
 `;
 
 const defaultShape = object().shape({
@@ -134,6 +135,10 @@ const validationSchema = object().shape({
   }),
 });
 
+const validationSeparatorSchema = object().shape({
+  separator: string().required(),
+});
+
 const initialValues: any = {
   name: "",
   nominal: null,
@@ -155,6 +160,10 @@ const initialValues: any = {
   tag: null,
   usage: [],
   value: [],
+};
+
+const initialSeparatorValues = {
+  separator: "",
 };
 
 const categories = [
@@ -200,7 +209,17 @@ const exportTypes = (data) => {
     return;
   }
   const types = data
-    .map((i) => (i.temporaryItem ? templateTemporaryType(i) : templateType(i)))
+    .map((i) => {
+      if (i.temporaryItem) {
+        return templateTemporaryType(i);
+      }
+
+      if (i.separator) {
+        return templateSeparator(i);
+      }
+
+      return templateType(i);
+    })
     .join("");
   const content = templateRoot(types);
   saveData(content, "types.xml");
@@ -388,6 +407,37 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
   </Formik>
 );
 
+const SeparatorForm = ({ onSubmit, action, initialValues, id }) => (
+  <Formik
+    validateOnMount={false}
+    initialValues={initialValues}
+    validationSchema={validationSeparatorSchema}
+    onSubmit={onSubmit}>
+    {({ values, isValid }) => {
+      return (
+        <Form autoComplete="off" noValidate={true} id={id}>
+          <Flex
+            sx={{
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              px: 4,
+            }}>
+            <fieldset disabled={false} style={{ border: "none", padding: 0 }}>
+              <TextAreaField
+                label="Separator"
+                name="separator"
+                required
+                rows={4}
+              />
+            </fieldset>
+            {action}
+          </Flex>
+        </Form>
+      );
+    }}
+  </Formik>
+);
+
 export const Generator = () => {
   const [store, setStoreData] = useLocalStorage("types", []);
   const [data, setData] = useState<any>(store);
@@ -407,74 +457,109 @@ export const Generator = () => {
           {
             Header: "Nominal",
             accessor: "nominal",
-            Cell: ({ row }) => row.original.nominal || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.nominal || "",
           },
           {
             Header: "Lifetime",
             accessor: "lifetime",
-            Cell: ({ row }) => row.original.lifetime || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.lifetime || "",
           },
           {
             Header: "Restock",
             accessor: "restock",
-            Cell: ({ row }) => row.original.restock || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.restock || "",
           },
           {
             Header: "Min",
             accessor: "min",
-            Cell: ({ row }) => row.original.min || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.min || "",
           },
           {
             Header: "Quantmin",
             accessor: "quantmin",
-            Cell: ({ row }) => row.original.quantmin || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.quantmin || "",
           },
           {
             Header: "Quantmax",
             accessor: "quantmax",
-            Cell: ({ row }) => row.original.quantmax || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.quantmax || "",
           },
           {
             Header: "Cost",
             accessor: "cost",
-            Cell: ({ row }) => row.original.cost || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.cost || "",
           },
           {
             Header: "Flags",
             accessor: "flags",
             Cell: ({ row }) =>
-              [
-                row.original.flags.count_in_cargo && "count_in_cargo",
-                row.original.flags.count_in_hoarder && "count_in_hoarder",
-                row.original.flags.count_in_map && "count_in_map",
-                row.original.flags.count_in_player && "count_in_player",
-                row.original.flags.crafted && "crafted",
-                row.original.flags.deloot && "deloot",
-              ]
-                .filter((i) => i)
-                .join(", ") || "",
+              row.original.separator
+                ? row.original.separator
+                : [
+                    row.original.flags.count_in_cargo && "count_in_cargo",
+                    row.original.flags.count_in_hoarder && "count_in_hoarder",
+                    row.original.flags.count_in_map && "count_in_map",
+                    row.original.flags.count_in_player && "count_in_player",
+                    row.original.flags.crafted && "crafted",
+                    row.original.flags.deloot && "deloot",
+                  ]
+                    .filter((i) => i)
+                    .join(", ") || "",
           },
           {
             Header: "Tag",
             accessor: "tag",
-            Cell: ({ row }) => row.original.tag?.label || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.tag?.label || "",
           },
           {
             Header: "Category",
             accessor: "category",
-            Cell: ({ row }) => row.original.category?.label || "",
+            Cell: ({ row }) =>
+              row.original.separator
+                ? row.original.separator
+                : row.original.category?.label || "",
           },
           {
             Header: "Usage",
             accessor: "usage",
             Cell: ({ row }) =>
-              row.original.usage?.map((usage) => usage.label).join(", ") || "",
+              row.original.separator
+                ? row.original.separator
+                : row.original.usage?.map((usage) => usage.label).join(", ") ||
+                  "",
           },
           {
             Header: "Value",
             accessor: "value",
             Cell: ({ row }) =>
-              row.original.value?.map((value) => value.label).join(", ") || "",
+              row.original.separator
+                ? row.original.separator
+                : row.original.value?.map((value) => value.label).join(", ") ||
+                  "",
           },
           {
             Header: "",
@@ -508,15 +593,17 @@ export const Generator = () => {
 
   useEffect(() => {
     setStoreData(data);
+    const content: any = document.getElementById("content");
+    content.scrollTop = content.scrollHeight;
   }, [setStoreData, data]);
 
   const onSubmitAdd = (values) => {
     const id = generateId();
     if (values.temporaryItem) {
       const { name, temporaryItem, lifetime, flags } = values;
-      setData([{ id, name, temporaryItem, lifetime, flags }, ...data]);
+      setData([...data, { id, name, temporaryItem, lifetime, flags }]);
     } else {
-      setData([{ id, ...values }, ...data]);
+      setData([...data, { id, ...values }]);
     }
   };
 
@@ -549,6 +636,38 @@ export const Generator = () => {
     setToDeleteRow(null);
   };
 
+  const replaceAll = (str, cerca, sostituisci) => {
+    return str.split(cerca).join(sostituisci);
+  };
+
+  const onSubmitSeparatorAdd = (values) => {
+    const id = generateId();
+    const { separator } = values;
+    let finalSeparator = replaceAll(replaceAll(separator, "<", ""), ">", "");
+    setData([...data, { id, separator: finalSeparator || "separator" }]);
+  };
+
+  const onSubmitSeparatorEdit = (id) => (values) => {
+    const items = data.map((item) => {
+      if (item.id === id) {
+        const { separator } = values;
+        let finalSeparator = replaceAll(
+          replaceAll(separator, "<", ""),
+          ">",
+          ""
+        );
+        return {
+          id,
+          separator: finalSeparator || "separator",
+        };
+      }
+
+      return item;
+    });
+    setData(items);
+    setSelectedRow(null);
+  };
+
   return (
     <>
       <Grid
@@ -564,13 +683,26 @@ export const Generator = () => {
           onSubmit={onSubmitAdd}
           initialValues={initialValues}
           action={
-            <Button mt={2} mb={3} variant="primary" type="submit">
+            <Button mt={2} variant="primary" type="submit">
               Add New
             </Button>
           }
         />
+
+        <SeparatorForm
+          id="separator"
+          onSubmit={onSubmitSeparatorAdd}
+          initialValues={initialSeparatorValues}
+          action={
+            <Button mt={2} mb={3} variant="primary" type="submit">
+              Add Separator
+            </Button>
+          }
+        />
       </Grid>
-      <Grid sx={{ gridArea: "Table", overflowY: "auto", bg: "primary" }}>
+      <Grid
+        sx={{ gridArea: "Table", overflowY: "auto", bg: "primary" }}
+        id="content">
         <TableUi
           columns={columns}
           data={data}
@@ -588,31 +720,46 @@ export const Generator = () => {
         }}>
         <Flex sx={{ justifyContent: "space-between", alignItems: "center" }}>
           <Text>
-            <b>Total Types</b>: {data.length}
+            <b>Total Types</b>: {data.filter((i) => !i.separator).length}
           </Text>
           <Box>
             <Modal isOpen={selectedRow?.id} onRequestClose={onCloseModal}>
               <ModalHeader
-                title={`Edit ${selectedRow?.name}`}
+                title={`Edit ${selectedRow?.name || selectedRow?.separator}`}
                 onRequestClose={onCloseModal}
               />
               <ModalBody>
-                <TypesForm
-                  id="edit"
-                  onSubmit={onSubmitEdit(selectedRow?.id)}
-                  initialValues={selectedRow}
-                  action={null}
-                />
+                {selectedRow?.separator && (
+                  <SeparatorForm
+                    id="separatorEdit"
+                    onSubmit={onSubmitSeparatorEdit(selectedRow?.id)}
+                    initialValues={selectedRow}
+                    action={null}
+                  />
+                )}
+
+                {selectedRow && !selectedRow.separator && (
+                  <TypesForm
+                    id="edit"
+                    onSubmit={onSubmitEdit(selectedRow?.id)}
+                    initialValues={selectedRow}
+                    action={null}
+                  />
+                )}
               </ModalBody>
               <ModalFooter>
-                <Button mt={2} variant="primary" type="submit" form="edit">
+                <Button
+                  mt={2}
+                  variant="primary"
+                  type="submit"
+                  form={selectedRow?.separator ? "separatorEdit" : "edit"}>
                   Update
                 </Button>
               </ModalFooter>
             </Modal>
             <Modal isOpen={toDeleteRow?.id} onRequestClose={onCloseModal}>
               <ModalHeader
-                title={`Remove ${toDeleteRow?.name}?`}
+                title={`Remove ${toDeleteRow?.name || toDeleteRow?.separator}?`}
                 onRequestClose={onCloseModal}
               />
 
