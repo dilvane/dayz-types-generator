@@ -1,7 +1,7 @@
 import { Generator } from "generator";
 import React from "react";
 
-import { Layout, Footer, Navbar } from "../components";
+import { Layout, Navbar } from "../components";
 import { DTGContext } from "../components/Context";
 
 function Index() {

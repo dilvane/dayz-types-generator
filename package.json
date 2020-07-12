@@ -8,7 +8,8 @@
     "commit": "git add . && npx git-cz",
     "dev": "env-cmd -e development next",
     "sort-package-json": "sort-package-json",
-    "start": "env-cmd -e development next start"
+    "start": "env-cmd -e development next start",
+    "lint": "eslint \"src/**/*.{js,jsx,ts,tsx}\""
   },
   "config": {
     "commitizen": {

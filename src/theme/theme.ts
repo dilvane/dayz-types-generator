@@ -1,5 +1,3 @@
-import { darken } from "@theme-ui/color";
-
 import { buttons } from "./buttons";
 import { colors } from "./colors";
 
