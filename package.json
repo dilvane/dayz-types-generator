@@ -62,7 +62,6 @@
     "eslint-plugin-jsx-a11y": "6.x",
     "eslint-plugin-react": "7.x",
     "eslint-plugin-react-hooks": "4.x",
-    "formik": "2.1.4",
     "husky": "next",
     "jest": "26.1.0",
     "lint-staged": "10.2.11",
