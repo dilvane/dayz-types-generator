@@ -811,7 +811,16 @@ export const Generator = () => {
     }
   };
 
-  const onSubmitEdit = (id) => (values) => {
+  const onSubmitEdit = (id) => (values, actions, data) => {
+    if (
+      data.find(
+        (i) => i.id !== id && i.name.toLowerCase() === values.name.toLowerCase()
+      )
+    ) {
+      actions.setFieldError("name", "This is name already exists.");
+      return;
+    }
+
     const items = data.map((item) => {
       if (item.id === id) {
         if (values.temporaryItem) {
@@ -951,6 +960,7 @@ export const Generator = () => {
                 {selectedRow && !selectedRow.separator && (
                   <TypesForm
                     id="edit"
+                    data={data}
                     onSubmit={onSubmitEdit(selectedRow?.id)}
                     initialValues={selectedRow}
                     action={null}
