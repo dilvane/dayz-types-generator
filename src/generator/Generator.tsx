@@ -4,8 +4,10 @@ import { Form, Formik } from "formik";
 import { useLocalStorage } from "hooks";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
 import React, { useMemo, useState, useEffect } from "react";
-import { Grid, Flex, Button, Box, Label, Text } from "theme-ui";
-import { object, string, number, array, boolean, mixed } from "yup";
+import ReactTooltip from "react-tooltip";
+import { Grid, Flex, Button, Box, Label, Text, Image } from "theme-ui";
+import * as Yup from "yup";
+const { object, string, number, array, boolean, mixed } = Yup;
 
 const templateRoot = (
   content
@@ -124,7 +126,7 @@ const validationSchema = object().shape({
   usage: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: array().of(defaultShape).required(),
+    otherwise: array().of(defaultShape).nullable(),
   }),
   value: mixed().when("temporaryItem", {
     is: true,
@@ -257,13 +259,13 @@ const generateId = () => {
   return "#" + Math.random().toString(36).substr(2, 9);
 };
 
-const TypesForm = ({ onSubmit, action, initialValues, id }) => (
+const TypesForm = ({ onSubmit, action, initialValues, id, data }) => (
   <Formik
     validateOnMount={false}
     initialValues={initialValues}
     validationSchema={validationSchema}
-    onSubmit={onSubmit}>
-    {({ values, isValid }) => {
+    onSubmit={(values, actions) => onSubmit(values, actions, data)}>
+    {({ values, errors }) => {
       return (
         <Form autoComplete="off" noValidate={true} id={id}>
           <Flex
@@ -273,7 +275,34 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
               px: 4,
             }}>
             <fieldset disabled={false} style={{ border: "none", padding: 0 }}>
-              <TextField label="Name" name="name" required />
+              <ReactTooltip
+                id="tooltip"
+                delayHide={500}
+                textColor="white"
+                backgroundColor="black"
+                effect="solid"
+                border
+                className="tooltip"
+                html={true}
+              />
+
+              <TextField
+                label="Name"
+                name="name"
+                required
+                tooltip={() => (
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-tip="Class Name of Item to Spawn."
+                  />
+                )}
+              />
+
+              <Text color="white" mb={2}>
+                {errors.name}
+              </Text>
               <Flex>
                 <CheckField
                   label="Is a temporary item?"
@@ -289,6 +318,15 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     required
                     type="number"
                     disabled={values.temporaryItem}
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Number of items spawned in the world at any given time. (Ideal Value) Must be more or equal to min value
+                        • Be Carefull changing this number. Too many will bring your server to its knees."
+                      />
+                    )}
                   />
                 </Box>
                 <Box sx={{ width: "100%" }}>
@@ -297,6 +335,15 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     name="lifetime"
                     required
                     type="number"
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Time (In Seconds) before this type of items gets deleted in the world (If no players interact with it)
+                        lifetime 604800 (seven days), 3888000 (45 days)."
+                      />
+                    )}
                   />
                 </Box>
               </Flex>
@@ -308,6 +355,14 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     required
                     type="number"
                     disabled={values.temporaryItem}
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="If Value=0, Respawn item type in bulk to reach Nominal Value, If !=0, then Value=Time in seconds to respawn 1 additional item type, until Nominal Value is reached."
+                      />
+                    )}
                   />
                 </Box>
                 <Box sx={{ width: "100%" }}>
@@ -317,6 +372,14 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     required
                     type="number"
                     disabled={values.temporaryItem}
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Minimum number of items of this type in world, Once number falls below minimum, the Restock process begins. (must be less or equal to nominal value)."
+                      />
+                    )}
                   />
                 </Box>
               </Flex>
@@ -328,6 +391,14 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     required
                     type="number"
                     disabled={values.temporaryItem}
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Minimum % Value for quantity (Rags #, Mag Ammo Value, Ammo Counts), Use -1 if Not Applicable. (less or equal to quantmax value)."
+                      />
+                    )}
                   />
                 </Box>
                 <Box sx={{ width: "100%" }}>
@@ -337,6 +408,14 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     required
                     type="number"
                     disabled={values.temporaryItem}
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Maximum % Value for quantity (Rags #, Mag Ammo Value, Ammo Counts), Use -1 if Not Applicable. (more or equal to quantmin value)."
+                      />
+                    )}
                   />
                 </Box>
               </Flex>
@@ -347,19 +426,51 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 required
                 type="number"
                 disabled={values.temporaryItem}
+                tooltip={() => (
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-tip="Priority of Item Spawning in CE queue (100 is default)."
+                  />
+                )}
               />
               <Flex sx={{ flexDirection: "column" }}>
-                <Label>Flags</Label>
+                <Label>
+                  Flags{" "}
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-tip="Flags directs the spawner, in what case is must take min and nominal values in to consideration for every item counting for spawning:"
+                  />
+                </Label>
                 <Flex>
                   <CheckField
                     label="count_in_cargo"
                     name="flags.count_in_cargo"
                     required
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Count items stored in containers as part of Nominal Value (0=False, 1=True)."
+                      />
+                    )}
                   />
                   <CheckField
                     label="count_in_hoarder"
                     name="flags.count_in_hoarder"
                     required
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Tents, barrels, undeground stashes (0=False, 1=True)."
+                      />
+                    )}
                   />
                 </Flex>
                 <Flex>
@@ -367,16 +478,56 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                     label="count_in_map"
                     name="flags.count_in_map"
                     required
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Count items in map as part of Nominal Value (0=False, 1=True)."
+                      />
+                    )}
                   />
                   <CheckField
                     label="count_in_player"
                     name="flags.count_in_player"
                     required
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Count items stored in Player Inventory as part of Nominal Value (0=False, 1=True)."
+                      />
+                    )}
                   />
                 </Flex>
                 <Flex>
-                  <CheckField label="crafted" name="flags.crafted" required />
-                  <CheckField label="deloot" name="flags.deloot" required />
+                  <CheckField
+                    label="crafted"
+                    name="flags.crafted"
+                    required
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Is the item a crafted item (0=False, 1=True)."
+                      />
+                    )}
+                  />
+                  <CheckField
+                    label="deloot"
+                    name="flags.deloot"
+                    required
+                    tooltip={() => (
+                      <Image
+                        src="static/info.svg"
+                        sx={{ ml: 2, width: "15px" }}
+                        data-for="tooltip"
+                        data-tip="Dynamic event loot objects - helicrashes in majority of cases only by default."
+                      />
+                    )}
+                  />
                 </Flex>
               </Flex>
               <SelectField
@@ -386,23 +537,45 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 required
                 options={categories}
                 isDisabled={values.temporaryItem}
+                tooltip={() => (
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-tip="Useful for sorting, Internal Category."
+                  />
+                )}
               />
               <SelectField
                 placeholder=""
                 label="Tag"
                 name="tag"
-                required
                 options={tags}
                 isDisabled={values.temporaryItem}
+                tooltip={() => (
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-tip="MUST be AFTER the category."
+                  />
+                )}
               />
               <SelectField
                 placeholder=""
                 label="Usage"
                 name="usage"
-                required
                 options={usages}
                 isDisabled={values.temporaryItem}
                 isMulti
+                tooltip={() => (
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-tip="Internal Category used in the mpmissions\dayzOffline.chernarusplus\cfgRandomPresets.xml file."
+                  />
+                )}
               />
               <SelectField
                 placeholder=""
@@ -412,6 +585,15 @@ const TypesForm = ({ onSubmit, action, initialValues, id }) => (
                 options={valuesItems}
                 isDisabled={values.temporaryItem}
                 isMulti
+                tooltip={() => (
+                  <Image
+                    src="static/info.svg"
+                    sx={{ ml: 2, width: "15px" }}
+                    data-for="tooltip"
+                    data-html={true}
+                    data-tip="Used to specify Central Loot Economy Spawning Locations ( More info here: Loot Locations: https://dayz.gamepedia.com/Central_Loot_Economy)."
+                  />
+                )}
               />
             </fieldset>
             {action}
@@ -613,8 +795,14 @@ export const Generator = () => {
     content.scrollTop = content.scrollHeight;
   }, [setStoreData, data]);
 
-  const onSubmitAdd = (values) => {
+  const onSubmitAdd = (values, actions, data) => {
     const id = generateId();
+
+    if (data.find((i) => i.name.toLowerCase() === values.name.toLowerCase())) {
+      actions.setFieldError("name", "This is name already exists.");
+      return;
+    }
+
     if (values.temporaryItem) {
       const { name, temporaryItem, lifetime, flags } = values;
       setData([...data, { id, name, temporaryItem, lifetime, flags }]);
@@ -703,6 +891,7 @@ export const Generator = () => {
           id="add"
           onSubmit={onSubmitAdd}
           initialValues={initialValues}
+          data={data}
           action={
             <Button mt={2} variant="primary" type="submit">
               Add New

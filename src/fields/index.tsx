@@ -17,6 +17,7 @@ export const TextField = ({ label, ...props }) => {
         htmlFor={props.id || props.name}
         variant={hasError ? "label.error" : "label"}>
         {label}
+        {props.tooltip && props.tooltip()}
       </Label>
       {props.mask ? (
         <InputMask {...field} {...props} value={`${field.value}`}>
@@ -141,6 +142,7 @@ export const SelectField = ({ label, options, ...props }) => {
         htmlFor={props.id || props.name}
         variant={hasError ? "label.error" : "label"}>
         {label}
+        {props.tooltip && props.tooltip()}
       </Label>
       <ReactSelect
         {...field}
@@ -220,6 +222,7 @@ export const CheckField = ({ label, ...props }: any) => {
             sx={{ color: "white" }}
           />
           {label}
+          {props.tooltip && props.tooltip()}
         </Flex>
       </Label>
     </Block>

@@ -25,6 +25,10 @@ const dynamicStyles = (theme: any) => css`
     margin: 0;
     padding: 0;
   }
+
+  .tooltip {
+    max-width: 400px;
+  }
 `;
 
 export default () => <Global styles={dynamicStyles} />;
