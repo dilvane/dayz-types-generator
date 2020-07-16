@@ -44,7 +44,7 @@ const templateType = ({
         <flags count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" count_in_map="${flags.count_in_map ? "1" : "0"}" count_in_player="${flags.count_in_player ? "1" : "0"}" crafted="${flags.crafted ? "1" : "0"}" deloot="${flags.deloot ? "1" : "0"}" />
         <category name="${category.value}"/>
         <tag name="${tag.value}"/>
-        ${usage.map((u) => `<usage name="${u.value}"/>`)}
+        ${usage?.map((u) => `<usage name="${u.value}"/>`)}
         ${value.map((v) => `<usage name="${v.value}"/>`)}
     </type>
 `;
