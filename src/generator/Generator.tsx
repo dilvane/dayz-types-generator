@@ -798,7 +798,12 @@ export const Generator = () => {
   const onSubmitAdd = (values, actions, data) => {
     const id = generateId();
 
-    if (data.find((i) => i.name.toLowerCase() === values.name.toLowerCase())) {
+    if (
+      data.find((i) => {
+        if (i.separator) return false;
+        return i.name.toLowerCase() === values.name.toLowerCase();
+      })
+    ) {
       actions.setFieldError("name", "This is name already exists.");
       return;
     }
@@ -813,9 +818,12 @@ export const Generator = () => {
 
   const onSubmitEdit = (id) => (values, actions, data) => {
     if (
-      data.find(
-        (i) => i.id !== id && i.name.toLowerCase() === values.name.toLowerCase()
-      )
+      data.find((i) => {
+        if (i.separator) return false;
+        return (
+          i.id !== id && i.name.toLowerCase() === values.name.toLowerCase()
+        );
+      })
     ) {
       actions.setFieldError("name", "This is name already exists.");
       return;
