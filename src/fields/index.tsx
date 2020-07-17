@@ -1,11 +1,23 @@
 import { Switch } from "@rebass/forms";
-import { Block } from "components";
+import { Block, Absolute, SpinnerAbsolute } from "components";
 import { useField } from "formik";
-import React from "react";
+import { useUploadFile } from "hooks";
+import React, { useEffect } from "react";
+import { useDropzone } from "react-dropzone";
 import InputMask from "react-input-mask";
 import ReactSelect from "react-select";
 import { theme } from "theme";
-import { Input, Label, Flex, Radio, Checkbox, Textarea, Box } from "theme-ui";
+import {
+  Input,
+  Label,
+  Flex,
+  Radio,
+  Checkbox,
+  Textarea,
+  Box,
+  Text,
+  Button,
+} from "theme-ui";
 
 export const TextField = ({ label, ...props }) => {
   const [field, meta] = useField(props.name);
@@ -242,5 +254,152 @@ export const SwitchField = ({ label, disabled, ...props }) => {
       <Switch checked={field.value} onClick={onClick} disabled={disabled} />
       <Box sx={{ ml: 2 }}>{label}</Box>
     </Flex>
+  );
+};
+
+export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
+  const [field, meta, helpers] = useField(props.name);
+  const {
+    uploadFile,
+    fileResponse,
+    removeFile,
+    loading,
+    error,
+  } = useUploadFile({
+    path: "docs",
+  });
+  const hasError = meta.touched && meta.error;
+
+  const onDrop = (acceptedFiles, rejectedFiles) => {
+    if (acceptedFiles[0]) {
+      uploadFile(acceptedFiles[0]);
+    } else {
+      helpers.setValue({
+        size: rejectedFiles[0].size,
+        mime: rejectedFiles[0].type,
+      });
+      helpers.setError(true);
+      helpers.setTouched(true);
+    }
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    multiple: false,
+    accept: accept.join(","),
+    maxSize,
+  });
+
+  const remove = () => {
+    removeFile(field.value);
+    helpers.setValue(null);
+    if (props.onRemove) {
+      props.onRemove();
+    }
+  };
+
+  useEffect(() => {
+    if (fileResponse) {
+      helpers.setValue(fileResponse);
+      if (props.onUpload) {
+        props.onUpload(fileResponse);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fileResponse]);
+
+  useEffect(() => {
+    if (field.value) {
+      helpers.setTouched(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const getFileSize = () => {
+    const size = field.value.size / 1024;
+    return `${size.toFixed(2)} MB`;
+  };
+
+  return (
+    <Block pb={4}>
+      <Label
+        htmlFor={props.id || props.name}
+        variant={hasError ? "label.error" : "label"}>
+        {label} {props.required ? "*" : ""}
+      </Label>
+
+      {!field.value?.url && (
+        <Flex
+          variant="images.fileUpload"
+          {...getRootProps()}
+          sx={{
+            justifyContent: "center",
+            alignItems: "flex-start",
+            pt: 3,
+            borderColor: hasError ? "red" : "",
+          }}>
+          <input {...getInputProps()} />
+          <Text variant="styles.p" mb="0" px={2}>
+            Carregue o ficheiro
+          </Text>
+          <Absolute
+            sx={{
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              p: 3,
+            }}>
+            <Button variant="small" type="button" disabled={loading}>
+              Selecionar
+            </Button>
+          </Absolute>
+          {loading && <SpinnerAbsolute />}
+        </Flex>
+      )}
+
+      {field.value?.url && (
+        <Flex
+          variant="images.fileUpload"
+          {...getRootProps()}
+          sx={{
+            justifyContent: "center",
+            alignItems: "flex-start",
+            pt: 3,
+          }}>
+          <Text
+            variant="styles.p"
+            mb="0"
+            px={2}
+            sx={{
+              fontSize: [1, null, 2],
+              display: "flex",
+              flexDirection: ["column", null, "row"],
+              textAlign: "center",
+              justifyContent: ["flex-start", null, "center"],
+              alignItems: ["center", null, "flex-start"],
+            }}>
+            <Text variant="ellipsis">{field.value.name}</Text>
+            <span> - {getFileSize()}</span>
+          </Text>
+          <Absolute
+            sx={{
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              p: 3,
+            }}>
+            <Button variant="small.danger" type="button" onClick={remove}>
+              Remover
+            </Button>
+          </Absolute>
+        </Flex>
+      )}
+
+      {error || hasError ? (
+        <Label variant="label.validation" m={0}>
+          {error || meta.error}
+        </Label>
+      ) : null}
+    </Block>
   );
 };

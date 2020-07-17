@@ -316,12 +316,6 @@ export default {
         color: "gray.7",
       },
     },
-    // switch: {
-    //   borderColor: "gray",
-    //   thumb: {
-    //     borderColor: "gray"
-    //   }
-    // }
   },
   images: {
     default: {
@@ -334,20 +328,6 @@ export default {
       height: 48,
       borderRadius: 99999,
     },
-    upload: {
-      borderWidth: 1,
-      borderStyle: "solid",
-      borderColor: "gray.7",
-      borderRadius: 2,
-      textAlign: "center",
-      alignItems: "center",
-      width: "150px",
-      height: "180px",
-      bg: "muted",
-      overflow: "hidden",
-      position: "relative",
-      m: "auto",
-    },
     fileUpload: {
       borderWidth: 2,
       borderStyle: "dashed",
@@ -356,17 +336,6 @@ export default {
       textAlign: "center",
       alignItems: "center",
       height: ["120px", null, "100px"],
-      bg: "muted",
-      overflow: "hidden",
-      position: "relative",
-    },
-    fileUploadInline: {
-      p: 3,
-      borderWidth: 1,
-      borderRadius: 2,
-      borderColor: "text",
-      textAlign: "center",
-      alignItems: "center",
       bg: "muted",
       overflow: "hidden",
       position: "relative",
@@ -388,100 +357,6 @@ export default {
   badges: {
     rounded: {
       borderRadius: "50%",
-    },
-  },
-  layout: {
-    header: {
-      backgroundColor: "black",
-      maxWidth: ["100%", null, "container"],
-      bg: "white",
-      px: [0, 0, 4],
-      zIndex: 2,
-      mb: 5,
-    },
-    container: {
-      display: "block",
-      maxWidth: "container",
-      gridTemplateColumns: "1fr",
-      px: 4,
-      py: 4,
-      mt: [2, null, 6],
-      mx: [2, null, "auto"],
-      mb: 7,
-      bg: "white",
-      boxShadow:
-        "0 0 1px rgba(67, 90, 111, 0.3), 0 2px 4px -2px rgba(67, 90, 111, 0.47);",
-      borderRadius: 2,
-    },
-    headerFixed: {
-      top: 0,
-      left: 0,
-      right: 0,
-      maxWidth: ["100%", null, "container"],
-      bg: "white",
-      px: [0, 0, 4],
-      pt: 6,
-      pb: 0,
-      position: ["relative", null, "fixed"],
-      zIndex: 2,
-      m: "auto",
-    },
-    footerFixed: {
-      bottom: 0,
-      left: 0,
-      right: 0,
-      bg: "primary",
-      py: 4,
-      position: "fixed",
-      border: 1,
-      borderWidth: 1,
-      borderStyle: "solid",
-      borderColor: "gray.7",
-      borderRadius: 0,
-      zIndex: 3,
-      transition: ".3s .1s",
-    },
-    footer: {
-      color: "white",
-      backgroundColor: "black",
-    },
-    admin: {
-      sidebar: {
-        boxShadow: "inset 0 0 1px rgba(67,90,111,.47)",
-        width: "sidebar",
-        color: "text",
-      },
-      navbar: {
-        bg: "primary",
-        color: "white",
-        height: "100%",
-        alignItems: "stretch",
-        justifyContent: "space-between",
-        pr: 4,
-        py: 1,
-        boxShadow:
-          "inset 0 0 1px rgba(67,90,111,.47), 0 2px 4px -2px rgba(67,90,111,.3)",
-      },
-      footer: {
-        justifyContent: "flex-end",
-        px: 4,
-        py: 1,
-        bg: "primary",
-        color: "white",
-      },
-      panel: {
-        bg: "white",
-        p: 4,
-        mb: 3,
-        boxShadow:
-          "inset 0 0 1px rgba(67,90,111,.47), 0 2px 4px -2px rgba(67,90,111,.3)",
-        print: {
-          bg: "white",
-          p: 0,
-          mb: 1,
-          boxShadow: "none",
-        },
-      },
     },
   },
 };

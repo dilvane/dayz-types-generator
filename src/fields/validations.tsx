@@ -17,3 +17,17 @@ export const date = () =>
 
       return true;
     });
+
+export const file = ({ MAX_SIZE, SUPPORTED_FORMATS }) =>
+  mixed()
+    .required("Obrigatório")
+    .test(
+      "fileFormat",
+      "Formato não suportado",
+      (value) => value && SUPPORTED_FORMATS.includes(value.mime)
+    )
+    .test(
+      "fileSize",
+      "Ficheiro muito grande",
+      (value) => value && value.size <= MAX_SIZE
+    );
