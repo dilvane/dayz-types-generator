@@ -63,7 +63,7 @@ class IndexPage extends Document {
           />
           <meta
             property="og:description"
-            content="Dayz Types Generator - Tool to fenerate and customize types.xml files"
+            content="Dayz Types Generator - Tool to generate and customize types.xml files"
           />
           <link
             rel="icon"
