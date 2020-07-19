@@ -427,8 +427,8 @@ export const Generator = () => {
           }
         />
 
-        <Box sx={{ textAlign: "center", mb: 3 }}>
-          <Text color="white">&copy; SquadZ Team</Text>
+        <Box sx={{ textAlign: "center", mb: 3, color: "white" }}>
+          <Text>&copy; SquadZ Team</Text>
         </Box>
       </Grid>
       <Grid
