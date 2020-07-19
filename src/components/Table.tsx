@@ -11,47 +11,33 @@ const getCellWidth = (index) => {
   const sx: any = {};
 
   if (index === 0) {
-    sx.flex = "1 0 190px";
+    sx.flex = "1 0 auto";
+    sx.justifyContent = "flex-start";
+    sx.minWidth = "100px";
   } else {
-    sx.flex = "0 0 84px";
-    sx.maxWidth = "84px";
-  }
-
-  if (index === 4) {
-    sx.flex = "0 0 40px";
-    sx.maxWidth = "40px";
-  }
-
-  if (index === 7) {
-    sx.flex = "0 0 50px";
-    sx.maxWidth = "50px";
+    sx.flex = "0 0 100px";
   }
 
   if (index === 8) {
-    sx.flex = "0 0 120px";
-    sx.maxWidth = "120px";
-  }
-
-  if (index === 12) {
-    sx.flex = "0 0 70px";
-    sx.maxWidth = "70px";
-  }
-
-  if (index === 13) {
-    sx.flex = "0 0 120px";
-    sx.maxWidth = "120px";
+    sx.flex = "0 0 130px";
+    sx.maxWidth = "130px";
   }
 
   return sx;
 };
 
-const getSize = () =>
-  window.innerHeight ||
-  document.documentElement.clientHeight ||
-  document.body.clientHeight;
+const getSize = () => ({
+  height:
+    (window.innerHeight ||
+      document.documentElement.clientHeight ||
+      document.body.clientHeight) - 110,
+  width:
+    window.innerWidth ||
+    document.documentElement.clientWidth ||
+    document.body.clientWidth,
+});
 
-export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
-  const [windowSize, setWindowSize] = useState(800);
+export const TableUi = ({ columns, data, onClick }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -63,13 +49,13 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
     columns,
     data,
   });
+  const [windowSize, setWindowSize] = useState({
+    height: 800,
+    width: totalColumnsWidth,
+  });
 
   useEffect(() => {
-    setWindowSize(
-      (window.innerHeight ||
-        document.documentElement.clientHeight ||
-        document.body.clientHeight) - 110
-    );
+    setWindowSize(getSize());
   }, []);
 
   useEffect(() => {
@@ -97,7 +83,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
             <Flex
               sx={{
                 flex: "1 0 auto",
-                justifyContent: "center",
+                justifyContent: "space-between",
                 alignItems: "center",
                 fontSize: 1,
                 py: 1,
@@ -106,8 +92,9 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
                 bg: "success",
                 color: "white",
               }}>
-              {row.original.separator}
-              <Box px="4">{row.cells[row.cells.length - 1].render("Cell")}</Box>
+              <span />
+              <span>{row.original.separator}</span>
+              <Box px="2">{row.cells[row.cells.length - 1].render("Cell")}</Box>
             </Flex>
           </Flex>
         );
@@ -132,7 +119,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
               <Flex
                 {...cell.getCellProps()}
                 sx={{
-                  justifyContent: "flex-start",
+                  justifyContent: "center",
                   alignItems: "center",
                   pl: 2,
                   ...getCellWidth(index),
@@ -155,7 +142,12 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
             {headerGroup.headers.map((column, index) => (
               <Flex
                 {...column.getHeaderProps()}
-                sx={{ pl: 2, py: 3, ...getCellWidth(index) }}>
+                sx={{
+                  pl: 2,
+                  py: 3,
+                  justifyContent: "center",
+                  ...getCellWidth(index),
+                }}>
                 {column.render("Header")}
               </Flex>
             ))}
@@ -164,13 +156,10 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
       })}
       <Flex {...getTableBodyProps()}>
         <List
-          height={windowSize}
+          height={windowSize.height}
           itemCount={rows.length}
-          itemSize={(index) => {
-            const row = rows[index];
-            return row.original.separator ? 40 : 100;
-          }}
-          width={totalColumnsWidth}>
+          itemSize={() => 50}
+          width={windowSize.width}>
           {RenderRow}
         </List>
       </Flex>

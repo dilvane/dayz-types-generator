@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import css from "@styled-system/css";
+import { Absolute } from "components";
 import React from "react";
 import { Grid, Flex, Image } from "theme-ui";
 
@@ -29,6 +30,17 @@ export const Navbar = () => {
           src="static/TypesGenerator_DAYZ_White_300x300.png"
           sx={{ width: "200px", height: "200px" }}
         />
+        <Absolute sx={{ mx: 4, mt: 2, width: "50px", height: "50px" }}>
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://discord.io/squadz">
+            <Image
+              src="static/discord.png"
+              sx={{ width: "50px", height: "50px" }}
+            />
+          </a>
+        </Absolute>
         <a
           className="bmc-button"
           target="_blank"

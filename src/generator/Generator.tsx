@@ -48,8 +48,10 @@ export const Generator = () => {
               return (
                 <Text
                   sx={{
-                    wordBreak: "break-all",
-                    maxWidth: "190px",
+                    maxWidth: "400px",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                   }}>
                   {row.original.name}
                 </Text>
@@ -112,84 +114,84 @@ export const Generator = () => {
                 ? row.original.separator
                 : row.original.cost || "",
           },
-          {
-            Header: "Flags",
-            accessor: "flags",
-            Cell: ({ row }) => (
-              <Text
-                sx={{
-                  whiteSpace: "wrap",
-                  maxWidth: "100px",
-                  fontSize: 0,
-                }}>
-                {row.original.separator
-                  ? row.original.separator
-                  : [
-                      row.original.flags.count_in_cargo && "count_in_cargo",
-                      row.original.flags.count_in_hoarder && "count_in_hoarder",
-                      row.original.flags.count_in_map && "count_in_map",
-                      row.original.flags.count_in_player && "count_in_player",
-                      row.original.flags.crafted && "crafted",
-                      row.original.flags.deloot && "deloot",
-                    ]
-                      .filter((i) => i)
-                      .join(", ") || ""}
-              </Text>
-            ),
-          },
-          {
-            Header: "Tag",
-            accessor: "tag",
-            Cell: ({ row }) =>
-              row.original.separator
-                ? row.original.separator
-                : row.original.tag?.label || "",
-          },
-          {
-            Header: "Category",
-            accessor: "category",
-            Cell: ({ row }) => (
-              <Text
-                sx={{
-                  maxWidth: "84px",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}>
-                {row.original.separator
-                  ? row.original.separator
-                  : row.original.category?.label || ""}
-              </Text>
-            ),
-          },
-          {
-            Header: "Usage",
-            accessor: "usage",
-            Cell: ({ row }) => (
-              <Text
-                sx={{
-                  maxWidth: "84px",
-                  whiteSpace: "nowrap",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                }}>
-                {row.original.separator
-                  ? row.original.separator
-                  : row.original.usage
-                      ?.map((usage) => usage.label)
-                      .join(", ") || ""}
-              </Text>
-            ),
-          },
-          {
-            Header: "Value",
-            accessor: "value",
-            Cell: ({ row }) =>
-              row.original.separator
-                ? row.original.separator
-                : row.original.value?.map((value) => value.label).join(", ") ||
-                  "",
-          },
+          // {
+          //   Header: "Flags",
+          //   accessor: "flags",
+          //   Cell: ({ row }) => (
+          //     <Text
+          //       sx={{
+          //         whiteSpace: "wrap",
+          //         maxWidth: "100px",
+          //         fontSize: 0,
+          //       }}>
+          //       {row.original.separator
+          //         ? row.original.separator
+          //         : [
+          //             row.original.flags.count_in_cargo && "count_in_cargo",
+          //             row.original.flags.count_in_hoarder && "count_in_hoarder",
+          //             row.original.flags.count_in_map && "count_in_map",
+          //             row.original.flags.count_in_player && "count_in_player",
+          //             row.original.flags.crafted && "crafted",
+          //             row.original.flags.deloot && "deloot",
+          //           ]
+          //             .filter((i) => i)
+          //             .join(", ") || ""}
+          //     </Text>
+          //   ),
+          // },
+          // {
+          //   Header: "Tag",
+          //   accessor: "tag",
+          //   Cell: ({ row }) =>
+          //     row.original.separator
+          //       ? row.original.separator
+          //       : row.original.tag?.label || "",
+          // },
+          // {
+          //   Header: "Category",
+          //   accessor: "category",
+          //   Cell: ({ row }) => (
+          //     <Text
+          //       sx={{
+          //         maxWidth: "84px",
+          //         whiteSpace: "nowrap",
+          //         overflow: "hidden",
+          //         textOverflow: "ellipsis",
+          //       }}>
+          //       {row.original.separator
+          //         ? row.original.separator
+          //         : row.original.category?.label || ""}
+          //     </Text>
+          //   ),
+          // },
+          // {
+          //   Header: "Usage",
+          //   accessor: "usage",
+          //   Cell: ({ row }) => (
+          //     <Text
+          //       sx={{
+          //         maxWidth: "84px",
+          //         whiteSpace: "nowrap",
+          //         overflow: "hidden",
+          //         textOverflow: "ellipsis",
+          //       }}>
+          //       {row.original.separator
+          //         ? row.original.separator
+          //         : row.original.usage
+          //             ?.map((usage) => usage.label)
+          //             .join(", ") || ""}
+          //     </Text>
+          //   ),
+          // },
+          // {
+          //   Header: "Value",
+          //   accessor: "value",
+          //   Cell: ({ row }) =>
+          //     row.original.separator
+          //       ? row.original.separator
+          //       : row.original.value?.map((value) => value.label).join(", ") ||
+          //         "",
+          // },
           {
             Header: "",
             id: "actions",
