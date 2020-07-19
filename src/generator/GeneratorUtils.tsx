@@ -261,7 +261,7 @@ export const isAValidType = async (type) => {
 };
 
 export const parseSeparator = (separator) => {
-  const re = /\w+.[\w\d\s]|\w/g;
+  const re = /\w+.[\w\d\s]+\w|\w/g;
   const result = re.exec(separator.nodeValue);
   if (result) {
     return result[0];
