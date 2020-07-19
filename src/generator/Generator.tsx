@@ -425,7 +425,6 @@ export const Generator = () => {
         <TableUi
           columns={columns}
           data={data}
-          clickedRow={true}
           onClick={(row) => setSelectedRow(row)}
         />
       </Grid>
