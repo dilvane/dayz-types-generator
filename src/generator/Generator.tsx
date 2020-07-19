@@ -294,12 +294,12 @@ export const Generator = () => {
     setToDeleteRow(null);
   };
 
-  const onSubmitSeparatorAdd = (values, currentData = data) => {
+  const onSubmitSeparatorAdd = (values) => {
     const id = generateId();
     const { separator } = values;
     let finalSeparator = replaceAll(replaceAll(separator, "<", ""), ">", "");
     const result = [
-      ...currentData,
+      ...data,
       { id, separator: finalSeparator.trim() || "separator" },
     ];
     setData(result);
