@@ -25,6 +25,8 @@ import {
   exportTypes,
 } from "./GeneratorUtils";
 
+const listRef: any = React.createRef();
+
 export const Generator = () => {
   const [store, setStoreData] = useLocalStorage("types", []);
   const [data, setData] = useState<any>(store);
@@ -224,9 +226,11 @@ export const Generator = () => {
 
   useEffect(() => {
     setStoreData(data);
-    const content: any = document.getElementById("content");
-    content.scrollTop = content.scrollHeight;
   }, [setStoreData, data]);
+
+  const gotoLastItem = () => {
+    listRef.current.scrollToItem(data.length);
+  };
 
   const onSubmitAdd = (values, actions, data) => {
     const id = generateId();
@@ -243,11 +247,13 @@ export const Generator = () => {
         { id, name: name.trim(), temporaryItem, lifetime, flags },
       ];
       setData(result);
+      gotoLastItem();
       return result;
     } else {
       const { name } = values;
       const result = [...data, { id, ...values, name: name.trim() }];
       setData(result);
+      gotoLastItem();
       return result;
     }
   };
@@ -305,6 +311,7 @@ export const Generator = () => {
       { id, separator: finalSeparator.trim() || "separator" },
     ];
     setData(result);
+    gotoLastItem();
     return result;
   };
 
@@ -423,6 +430,7 @@ export const Generator = () => {
         sx={{ gridArea: "Table", overflowY: "auto", bg: "primary" }}
         id="content">
         <TableUi
+          listRef={listRef}
           columns={columns}
           data={data}
           onClick={(row) => setSelectedRow(row)}

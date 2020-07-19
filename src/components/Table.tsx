@@ -37,7 +37,7 @@ const getSize = () => ({
     document.body.clientWidth,
 });
 
-export const TableUi = ({ columns, data, onClick }) => {
+export const TableUi = ({ columns, data, onClick, listRef }) => {
   const {
     getTableProps,
     getTableBodyProps,
@@ -156,6 +156,7 @@ export const TableUi = ({ columns, data, onClick }) => {
       })}
       <Flex {...getTableBodyProps()}>
         <List
+          ref={listRef}
           height={windowSize.height}
           itemCount={rows.length}
           itemSize={() => 50}

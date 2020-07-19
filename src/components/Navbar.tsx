@@ -34,7 +34,7 @@ export const Navbar = () => {
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="https://discord.io/squadz">
+            href="https://discord.io/squadzteam">
             <Image
               src="static/discord.png"
               sx={{ width: "50px", height: "50px" }}
