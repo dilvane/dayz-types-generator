@@ -44,7 +44,7 @@ class IndexPage extends Document {
     return (
       <Html>
         <Head>
-          {/* <title>Dayz Types Generator</title> */}
+          <title>Dayz Types Generator</title>
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"
@@ -61,7 +61,10 @@ class IndexPage extends Document {
             property="og:image"
             content={`https://dayz-types-generator.vercel.app/static/TypesGenerator_DAYZ_Black_300x300.png`}
           />
-          <meta property="og:description" content="Dayz Types Generator" />
+          <meta
+            property="og:description"
+            content="Dayz Types Generator - Tool to fenerate and customize types.xml files"
+          />
           <link
             rel="icon"
             href="/static/TypesGenerator_DAYZ_White_Favicon.png"
