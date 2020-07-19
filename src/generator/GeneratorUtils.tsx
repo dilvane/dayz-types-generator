@@ -131,22 +131,22 @@ export const loadType = (type, initialValues) => {
         newType.flags = flags;
       } else if (item.nodeName === "tag") {
         newType.tag = {
-          value: item.getAttribute("name"),
+          value: item.getAttribute("name").toLowerCase(),
           label: item.getAttribute("name"),
         };
       } else if (item.nodeName === "category") {
         newType.category = {
-          value: item.getAttribute("name"),
+          value: item.getAttribute("name").toLowerCase(),
           label: item.getAttribute("name"),
         };
       } else if (item.nodeName === "usage") {
         newType.usage.push({
-          value: item.getAttribute("name"),
+          value: item.getAttribute("name").toLowerCase(),
           label: item.getAttribute("name"),
         });
       } else if (item.nodeName === "value") {
         newType.value.push({
-          value: item.getAttribute("name"),
+          value: item.getAttribute("name").toLowerCase(),
           label: item.getAttribute("name"),
         });
       } else {
@@ -181,15 +181,6 @@ export const loadTemporaryType = (type, initialValues) => {
       }
     }
   });
-
-  return newType;
-};
-
-export const loadSeparator = (type, initialValues) => {
-  const newType = { ...initialValues };
-  newType.separator = "true";
-  // eslint-disable-next-line no-console
-  console.log(type);
 
   return newType;
 };
@@ -254,10 +245,7 @@ export const parseType = (type) => {
 };
 
 export const isAValidType = async (type) => {
-  const isValid = await validationSchema
-    .isValid(type)
-    .then((isValid) => isValid);
-  return isValid;
+  return await validationSchema.isValid(type).then((isValid) => isValid);
 };
 
 export const parseSeparator = (separator) => {

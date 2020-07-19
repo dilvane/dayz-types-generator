@@ -348,7 +348,7 @@ export const Generator = () => {
     setTimeout(() => importFile(file), 1000);
   };
 
-  const importFile = (file) => {
+  const importFile = async (file) => {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(file.content, "text/xml");
 
@@ -368,10 +368,11 @@ export const Generator = () => {
 
     let newTypes = data;
 
-    types[0].childNodes.forEach((element) => {
+    for (const element of types[0].childNodes) {
       if (element.nodeName === "type") {
         const type = parseType(element);
-        if (isAValidType(type)) {
+
+        if (await isAValidType(type)) {
           const result = addType(type, actions, newTypes);
           if (result) {
             newTypes = result;
@@ -387,9 +388,9 @@ export const Generator = () => {
         newTypes = result;
         report.separator += 1;
       }
-    });
+    }
 
-    setUpload(null);
+    //setUpload(null);
     setReport(report);
     setData(newTypes);
     setLoading(false);

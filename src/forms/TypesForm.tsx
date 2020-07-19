@@ -23,32 +23,35 @@ const tags = [
 ];
 
 const usages = [
-  { value: "Coast", label: "Coast" },
-  { value: "Farm", label: "Farm" },
-  { value: "Firefighter", label: "Firefighter" },
-  { value: "Hunting", label: "Hunting" },
-  { value: "Industrial", label: "Industrial" },
-  { value: "Medic", label: "Medic" },
-  { value: "Military", label: "Military" },
-  { value: "Office", label: "Office" },
-  { value: "Police", label: "Police" },
-  { value: "Prison", label: "Prison" },
-  { value: "School", label: "School" },
-  { value: "Town", label: "Town" },
-  { value: "Village", label: "Village" },
+  { value: "coast", label: "Coast" },
+  { value: "farm", label: "Farm" },
+  { value: "firefighter", label: "Firefighter" },
+  { value: "hunting", label: "Hunting" },
+  { value: "industrial", label: "Industrial" },
+  { value: "medic", label: "Medic" },
+  { value: "military", label: "Military" },
+  { value: "office", label: "Office" },
+  { value: "police", label: "Police" },
+  { value: "prison", label: "Prison" },
+  { value: "school", label: "School" },
+  { value: "town", label: "Town" },
+  { value: "village", label: "Village" },
 ];
 
 const valuesItems = [
-  { value: "Tier1", label: "Tier1" },
-  { value: "Tier2", label: "Tier2" },
-  { value: "Tier3", label: "Tier3" },
-  { value: "Tier4", label: "Tier4" },
+  { value: "tier1", label: "Tier1" },
+  { value: "tier2", label: "Tier2" },
+  { value: "tier3", label: "Tier3" },
+  { value: "tier4", label: "Tier4" },
 ];
 
-const defaultShape = object().shape({
-  value: string().required(),
-  label: string().required(),
-});
+const defaultShape = (values) =>
+  object().shape({
+    value: string()
+      .oneOf(values.map((i) => i.value.toLowerCase()))
+      .required(),
+    label: string().required(),
+  });
 
 export const validationSchema = object().shape({
   temporaryItem: boolean(),
@@ -95,22 +98,22 @@ export const validationSchema = object().shape({
   category: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: defaultShape.nullable(),
+    otherwise: defaultShape(categories).nullable(),
   }),
   tag: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: defaultShape.nullable(),
+    otherwise: defaultShape(tags).nullable(),
   }),
   usage: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: array().of(defaultShape).nullable(),
+    otherwise: array().of(defaultShape(usages)).nullable(),
   }),
   value: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: array().of(defaultShape).nullable(),
+    otherwise: array().of(defaultShape(valuesItems)).nullable(),
   }),
 });
 
