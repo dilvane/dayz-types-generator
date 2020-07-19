@@ -17,18 +17,24 @@ export const Absolute = ({ sx, ...props }: any) => (
   />
 );
 
-export const SpinnerAbsolute = ({ size = 56, strokeWidth = 2, ...sx }) => (
+export const AbsoluteBase = ({ sx = {}, children }) => (
   <Absolute
     sx={{
       flexDirection: "column",
       justifyContent: "center",
       alignItems: "center",
       p: 4,
-      bg: alpha("white", 0.7),
+      bg: alpha("black", 0.7),
       transition: "0.2",
       zIndex: 999,
       ...sx,
-    }}>
-    <Spinner strokeWidth={strokeWidth} size={size} />
-  </Absolute>
+    }}
+    children={children}
+  />
+);
+
+export const SpinnerAbsolute = ({ size = 56, strokeWidth = 2, ...sx }) => (
+  <AbsoluteBase {...sx}>
+    <Spinner color="danger" strokeWidth={strokeWidth} size={size} />
+  </AbsoluteBase>
 );

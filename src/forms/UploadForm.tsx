@@ -1,26 +1,21 @@
+import { AbsoluteBase } from "components";
 import { FileUploadField } from "fields";
 import { file } from "fields/validations";
 import { Form, Formik } from "formik";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
 import React from "react";
-import { Flex, Button } from "theme-ui";
+import { Flex, Button, Text, Heading, Box } from "theme-ui";
 import * as Yup from "yup";
 
 const { object } = Yup;
-const MAX_SIZE = 1024 * 10; // 10MB;
-const SUPPORTED_FORMATS = [
-  "image/jpg",
-  "image/jpeg",
-  "image/png",
-  "application/pdf",
-];
+const SUPPORTED_FORMATS = ["text/xml"];
 
 const validationUploadSchema = object().shape({
-  docs: file({ MAX_SIZE, SUPPORTED_FORMATS }),
+  file: file({ SUPPORTED_FORMATS }),
 });
 
 const initialUpload: any = {
-  docs: "",
+  file: "",
 };
 
 export const UploadForm = ({
@@ -34,7 +29,7 @@ export const UploadForm = ({
       validateOnMount={false}
       initialValues={initialValues}
       validationSchema={validationUploadSchema}
-      onSubmit={onSubmit}>
+      onSubmit={(values) => onSubmit(values)}>
       {() => {
         return (
           <Form autoComplete="off" noValidate={true} id={id}>
@@ -46,12 +41,9 @@ export const UploadForm = ({
               }}>
               <fieldset disabled={false} style={{ border: "none", padding: 0 }}>
                 <FileUploadField
-                  label="Ficheiro"
-                  name="docs"
-                  maxSize={MAX_SIZE * 1024}
+                  label="File"
+                  name="file"
                   accept={SUPPORTED_FORMATS}
-                  onUpload={() => console.log("onUpload")}
-                  onRemove={() => console.log("onRemove")}
                   required
                 />
               </fieldset>
@@ -64,21 +56,57 @@ export const UploadForm = ({
   );
 };
 
-export const UploadModal = ({ isOpen, onCloseModal, onConfirm }) => (
-  <Modal isOpen={isOpen} onRequestClose={onCloseModal}>
+export const UploadModal = ({ isOpen, onCloseModal, onConfirm, loading }) => (
+  <Modal isOpen={isOpen} onRequestClose={onCloseModal} height="100%">
     <ModalHeader title="Upload file" onRequestClose={onCloseModal} />
 
     <ModalBody>
-      <UploadForm
-        id="Upload"
-        onSubmit={() => console.log("onSubmitUpload")}
-        action={null}
-      />
+      <UploadForm id="Upload" action={null} onSubmit={onConfirm} />
+      {loading && (
+        <AbsoluteBase>
+          <Box sx={{ color: "white", fontSize: 5 }}>Loading...</Box>
+        </AbsoluteBase>
+      )}
     </ModalBody>
 
     <ModalFooter>
-      <Button mt={2} variant="danger" onClick={onConfirm}>
-        Upload
+      <Button mt={2} variant="primary" form="Upload" type="submit">
+        Import
+      </Button>
+    </ModalFooter>
+  </Modal>
+);
+
+export const ReportModal = ({ isOpen, onCloseModal, item }) => (
+  <Modal isOpen={isOpen} onRequestClose={onCloseModal} height="100%">
+    <ModalHeader title="File imported" onRequestClose={onCloseModal} />
+
+    {item && (
+      <ModalBody color="white">
+        <Box p="4">
+          <Flex sx={{ alignItems: "center" }}>
+            <Heading as="h3">Valid types: </Heading>
+            <Text ml="2">{item.valid}</Text>
+          </Flex>
+          <Flex sx={{ alignItems: "center" }}>
+            <Heading as="h3">Invalid types: </Heading>
+            <Text ml="2">{item.invalid}</Text>
+          </Flex>
+          <Flex sx={{ alignItems: "center" }}>
+            <Heading as="h3">Duplicated types: </Heading>
+            <Text ml="2">{item.duplicated}</Text>
+          </Flex>
+          <Flex sx={{ alignItems: "center" }}>
+            <Heading as="h3">Separators: </Heading>
+            <Text ml="2">{item.separator}</Text>
+          </Flex>
+        </Box>
+      </ModalBody>
+    )}
+
+    <ModalFooter>
+      <Button mt={2} variant="primary" onClick={onCloseModal}>
+        Ok
       </Button>
     </ModalFooter>
   </Modal>

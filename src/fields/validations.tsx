@@ -18,16 +18,11 @@ export const date = () =>
       return true;
     });
 
-export const file = ({ MAX_SIZE, SUPPORTED_FORMATS }) =>
+export const file = ({ SUPPORTED_FORMATS }) =>
   mixed()
-    .required("Obrigatório")
+    .required()
     .test(
       "fileFormat",
-      "Formato não suportado",
+      "Format is not supported",
       (value) => value && SUPPORTED_FORMATS.includes(value.mime)
-    )
-    .test(
-      "fileSize",
-      "Ficheiro muito grande",
-      (value) => value && value.size <= MAX_SIZE
     );

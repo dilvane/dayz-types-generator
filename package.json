@@ -1,6 +1,6 @@
 {
   "name": "dayz-types-generator",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "scripts": {
@@ -28,6 +28,7 @@
     "react-select": "^3.1.0",
     "react-table": "^7.2.2",
     "react-tooltip": "^4.2.7",
+    "react-window": "^1.8.5",
     "theme-ui": "^0.3.1",
     "yup": "^0.29.1"
   },
@@ -50,6 +51,7 @@
     "@types/react": "^16.9.41",
     "@typescript-eslint/eslint-plugin": "3.x",
     "@typescript-eslint/parser": "3.x",
+    "@zeit/next-workers": "1.0.0",
     "babel-eslint": "10.x",
     "babel-plugin-codegen": "^4.0.1",
     "cz-conventional-changelog": "3.2.0",
@@ -72,7 +74,8 @@
     "react-dropzone": "^11.0.2",
     "react-input-mask": "3.0.0-alpha.2",
     "sort-package-json": "1.44.0",
-    "typescript": "3.9.6"
+    "typescript": "3.9.6",
+    "worker-loader": "2.0.0"
   },
   "installConfig": {
     "pnp": false

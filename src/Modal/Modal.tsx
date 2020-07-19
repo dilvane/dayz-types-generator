@@ -25,7 +25,7 @@ export const ModalBody = ({ sx = {}, ...props }) => (
   <Box
     {...props}
     sx={{
-      overflow: "auto",
+      overflow: "visible",
       flex: "1 1 auto",
       bg: "primary",
       ...sx,
@@ -48,12 +48,12 @@ export const ModalFooter = ({ sx = {}, ...props }) => (
 
 interface ModalProps extends Props {
   children: React.ReactElement[] | string;
-
-  isOpen: boolean;
+  height?: string;
+  isOpen: boolean | null;
   onRequestClose?: any;
 }
 
-export const Modal = ({ children, ...props }: ModalProps) => {
+export const Modal = ({ children, height = "100%", ...props }: ModalProps) => {
   return (
     <>
       <Global
@@ -73,7 +73,7 @@ export const Modal = ({ children, ...props }: ModalProps) => {
 
           .ReactModal__Content {
             transition: transform 0.3s ease-out;
-            transform: translate(0, 50px);
+            transform: translate(0, -50px);
           }
 
           .ReactModal__Content--after-open {
@@ -114,7 +114,7 @@ export const Modal = ({ children, ...props }: ModalProps) => {
             borderRadius: 0,
             outline: "none",
             background: "none",
-            overflow: "hidden",
+            overflow: "auto",
           },
         }}
         {...props}>
@@ -122,7 +122,7 @@ export const Modal = ({ children, ...props }: ModalProps) => {
           sx={{
             p: [0, null, 4],
             width: "100%",
-            height: "100%",
+            height,
             alignItems: "center",
             justifyContent: "center",
           }}>
@@ -133,9 +133,10 @@ export const Modal = ({ children, ...props }: ModalProps) => {
               borderRadius: "small",
               boxShadow: "card",
               color: "text",
-              minWidth: ["100%", null, "627px"],
-              maxHeight: "100%",
-              maxWidth: ["100%", null, "627px"],
+              minWidth: ["100%", null, "700px"],
+              maxHeight: height,
+              maxWidth: ["100%", null, "700px"],
+              position: "relative",
             }}>
             {children}
           </Flex>

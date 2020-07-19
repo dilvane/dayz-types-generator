@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function useLocalStorage(key, initialValue) {
   const [storedValue, setStoredValue] = useState(() => {
@@ -24,7 +24,7 @@ export function useLocalStorage(key, initialValue) {
   return [storedValue, setValue];
 }
 
-export const useUploadFile = ({ path = "" }) => {
+export const useUploadFile = () => {
   const [file, setFile] = useState<any>(null);
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState<any>(false);
@@ -35,44 +35,23 @@ export const useUploadFile = ({ path = "" }) => {
     setLoading(true);
     setError(false);
 
-    const xhr = new XMLHttpRequest();
-    const formData = new FormData();
-    formData.append("path", path);
-    formData.append("files", file, file.name);
-    xhr.open("POST", `${API}/upload/`);
-    setError(true);
-    xhr.send(formData);
-
-    xhr.onload = () => {
-      if (xhr.status === 200) {
-        const { id, name, url, size, mime, formats } = JSON.parse(
-          xhr.responseText
-        )[0];
-
-        if (formats) {
-          Object.entries(formats).forEach(([key]) => {
-            formats[key].url = `${uploadPrefix}${formats[key].url}`;
-          });
-        }
-
-        setResponse({
-          id,
-          name,
-          size,
-          mime,
-          url: `${uploadPrefix}${url}`,
-          formats,
-        });
-      } else {
-        setResponse(null);
-        setError(true);
-      }
+    const reader = new FileReader();
+    reader.readAsText(file);
+    reader.onloadend = (r) => {
+      setResponse({
+        size: file.size,
+        name: file.name,
+        mime: file.type,
+        content: reader.result,
+      });
       setLoading(false);
+      setError(false);
     };
 
-    xhr.onerror = () => {
-      setError("Erro ao enviar o ficheiro");
+    reader.onerror = () => {
+      setResponse(null);
       setLoading(false);
+      setError(true);
     };
   }, [file]);
 
@@ -83,7 +62,6 @@ export const useUploadFile = ({ path = "" }) => {
 
   const remove = (file) => {
     reset();
-    removeFile(file);
   };
 
   return {

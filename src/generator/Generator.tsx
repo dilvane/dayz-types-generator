@@ -7,11 +7,21 @@ import {
   RemoveAllModal,
   EditItemModal,
 } from "forms";
+import { ReportModal } from "forms/UploadForm";
 import { useLocalStorage } from "hooks";
 import React, { useMemo, useState, useEffect } from "react";
 import { Grid, Flex, Button, Box, Text, Image } from "theme-ui";
 
-import { generateId, exportOnlyNames, exportTypes } from "./GeneratorUtils";
+import {
+  parseType,
+  isAValidType,
+  generateId,
+  isDuplicated,
+  parseSeparator,
+  replaceAll,
+  addSeparator,
+  addType,
+} from "./GeneratorUtils";
 
 export const Generator = () => {
   const [store, setStoreData] = useLocalStorage("types", []);
@@ -20,6 +30,8 @@ export const Generator = () => {
   const [toDeleteRow, setToDeleteRow] = useState<any>({});
   const [removeAll, setRemoveAll] = useState<any>(false);
   const [upload, setUpload] = useState<any>(false);
+  const [report, setReport] = useState<any>(null);
+  const [loading, setLoading] = useState<any>(false);
 
   const columns = useMemo(
     () => [
@@ -30,6 +42,17 @@ export const Generator = () => {
           {
             Header: "Name",
             accessor: "name",
+            Cell: ({ row }) => {
+              return (
+                <Text
+                  sx={{
+                    wordBreak: "break-all",
+                    maxWidth: "200px",
+                  }}>
+                  {row.original.name}
+                </Text>
+              );
+            },
           },
           {
             Header: "Nominal",
@@ -90,19 +113,27 @@ export const Generator = () => {
           {
             Header: "Flags",
             accessor: "flags",
-            Cell: ({ row }) =>
-              row.original.separator
-                ? row.original.separator
-                : [
-                    row.original.flags.count_in_cargo && "count_in_cargo",
-                    row.original.flags.count_in_hoarder && "count_in_hoarder",
-                    row.original.flags.count_in_map && "count_in_map",
-                    row.original.flags.count_in_player && "count_in_player",
-                    row.original.flags.crafted && "crafted",
-                    row.original.flags.deloot && "deloot",
-                  ]
-                    .filter((i) => i)
-                    .join(", ") || "",
+            Cell: ({ row }) => (
+              <Text
+                sx={{
+                  whiteSpace: "wrap",
+                  maxWidth: "100px",
+                  fontSize: 0,
+                }}>
+                {row.original.separator
+                  ? row.original.separator
+                  : [
+                      row.original.flags.count_in_cargo && "count_in_cargo",
+                      row.original.flags.count_in_hoarder && "count_in_hoarder",
+                      row.original.flags.count_in_map && "count_in_map",
+                      row.original.flags.count_in_player && "count_in_player",
+                      row.original.flags.crafted && "crafted",
+                      row.original.flags.deloot && "deloot",
+                    ]
+                      .filter((i) => i)
+                      .join(", ") || ""}
+              </Text>
+            ),
           },
           {
             Header: "Tag",
@@ -177,21 +208,20 @@ export const Generator = () => {
   const onSubmitAdd = (values, actions, data) => {
     const id = generateId();
 
-    if (
-      data.find((i) => {
-        if (i.separator) return false;
-        return i.name.toLowerCase() === values.name.toLowerCase();
-      })
-    ) {
+    if (isDuplicated(values, data)) {
       actions.setFieldError("name", "This is name already exists.");
-      return;
+      return false;
     }
 
     if (values.temporaryItem) {
       const { name, temporaryItem, lifetime, flags } = values;
-      setData([...data, { id, name, temporaryItem, lifetime, flags }]);
+      const result = [...data, { id, name, temporaryItem, lifetime, flags }];
+      setData(result);
+      return result;
     } else {
-      setData([...data, { id, ...values }]);
+      const result = [...data, { id, ...values }];
+      setData(result);
+      return result;
     }
   };
 
@@ -227,6 +257,8 @@ export const Generator = () => {
   const onCloseModal = () => {
     setSelectedRow(null);
     setToDeleteRow(null);
+    setUpload(null);
+    setReport(null);
   };
 
   const onRemove = () => {
@@ -236,15 +268,16 @@ export const Generator = () => {
     setToDeleteRow(null);
   };
 
-  const replaceAll = (str, cerca, sostituisci) => {
-    return str.split(cerca).join(sostituisci);
-  };
-
-  const onSubmitSeparatorAdd = (values) => {
+  const onSubmitSeparatorAdd = (values, currentData = data) => {
     const id = generateId();
     const { separator } = values;
     let finalSeparator = replaceAll(replaceAll(separator, "<", ""), ">", "");
-    setData([...data, { id, separator: finalSeparator || "separator" }]);
+    const result = [
+      ...currentData,
+      { id, separator: finalSeparator || "separator" },
+    ];
+    setData(result);
+    return result;
   };
 
   const onSubmitSeparatorEdit = (id) => (values) => {
@@ -271,6 +304,60 @@ export const Generator = () => {
   const onRemoveAll = () => {
     setData([]);
     setRemoveAll(false);
+  };
+
+  const onImportFile = (values) => {
+    //onCloseModal();
+    const { file } = values;
+    setLoading(true);
+    setTimeout(() => importFile(file), 1000);
+  };
+
+  const importFile = (file) => {
+    const parser = new DOMParser();
+    const xmlDoc = parser.parseFromString(file.content, "text/xml");
+
+    const types = xmlDoc.getElementsByTagName("types");
+    const report = {
+      valid: 0,
+      invalid: 0,
+      duplicated: 0,
+      separator: 0,
+    };
+
+    const actions = {
+      setFieldError: () => {
+        report.duplicated += 1;
+      },
+    };
+
+    let newTypes = data;
+
+    types[0].childNodes.forEach((element) => {
+      if (element.nodeName === "type") {
+        const type = parseType(element);
+        if (isAValidType(type)) {
+          const result = addType(type, actions, newTypes);
+          if (result) {
+            newTypes = result;
+            report.valid += 1;
+          }
+        } else {
+          report.invalid += 1;
+        }
+      }
+      if (element.nodeName === "#comment") {
+        const separator = parseSeparator(element);
+        const result = addSeparator({ separator }, newTypes);
+        newTypes = result;
+        report.separator += 1;
+      }
+    });
+
+    setUpload(null);
+    setReport(report);
+    setData(newTypes);
+    setLoading(false);
   };
 
   return (
@@ -343,6 +430,7 @@ export const Generator = () => {
               )}
               typesForm={(item) => (
                 <TypesForm
+                  key={item.id}
                   id="edit"
                   data={data}
                   onSubmit={onSubmitEdit(item?.id)}
@@ -368,7 +456,14 @@ export const Generator = () => {
             <UploadModal
               isOpen={upload}
               onCloseModal={onCloseModal}
-              onConfirm={() => console.log()}
+              onConfirm={onImportFile}
+              loading={loading}
+            />
+
+            <ReportModal
+              isOpen={report}
+              item={report}
+              onCloseModal={onCloseModal}
             />
           </Box>
           <Box>
@@ -377,8 +472,10 @@ export const Generator = () => {
               type="button"
               onClick={() => setUpload(true)}
               mr="3">
-              <Image src="static/upload.svg" sx={{ width: "20px" }} />
-              Upload .xml
+              <Flex sx={{ alignItems: "center" }}>
+                <Image src="static/upload.svg" sx={{ height: "15px", mr: 2 }} />
+                <Text>Upload .xml</Text>
+              </Flex>
             </Button>
             <Button
               variant="danger"

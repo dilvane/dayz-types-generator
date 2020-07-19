@@ -44,7 +44,7 @@ class IndexPage extends Document {
     return (
       <Html>
         <Head>
-          <title>Dayz Types Generator</title>
+          {/* <title>Dayz Types Generator</title> */}
           <meta
             name="viewport"
             content="initial-scale=1.0, width=device-width"

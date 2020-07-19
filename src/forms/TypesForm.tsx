@@ -50,7 +50,7 @@ const defaultShape = object().shape({
   label: string().required(),
 });
 
-const validationSchema = object().shape({
+export const validationSchema = object().shape({
   temporaryItem: boolean(),
   name: string().required(),
   nominal: mixed().when("temporaryItem", {
@@ -95,12 +95,12 @@ const validationSchema = object().shape({
   category: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: defaultShape.required(),
+    otherwise: defaultShape.nullable(),
   }),
   tag: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: defaultShape.required(),
+    otherwise: defaultShape.nullable(),
   }),
   usage: mixed().when("temporaryItem", {
     is: true,
@@ -110,7 +110,7 @@ const validationSchema = object().shape({
   value: mixed().when("temporaryItem", {
     is: true,
     then: string().nullable(),
-    otherwise: array().of(defaultShape).required(),
+    otherwise: array().of(defaultShape).nullable(),
   }),
 });
 
@@ -151,7 +151,7 @@ export const TypesForm = ({
     onSubmit={(values, actions) => onSubmit(values, actions, data)}>
     {({ values, errors }) => {
       return (
-        <Form autoComplete="off" noValidate={true} id={id}>
+        <Form autoComplete="off" noValidate={true} id={id} name={id}>
           <Flex
             sx={{
               flexDirection: "column",

@@ -257,7 +257,7 @@ export const SwitchField = ({ label, disabled, ...props }) => {
   );
 };
 
-export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
+export const FileUploadField = ({ label, accept, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
   const {
     uploadFile,
@@ -265,9 +265,7 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
     removeFile,
     loading,
     error,
-  } = useUploadFile({
-    path: "docs",
-  });
+  } = useUploadFile();
   const hasError = meta.touched && meta.error;
 
   const onDrop = (acceptedFiles, rejectedFiles) => {
@@ -275,8 +273,9 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
       uploadFile(acceptedFiles[0]);
     } else {
       helpers.setValue({
-        size: rejectedFiles[0].size,
-        mime: rejectedFiles[0].type,
+        size: rejectedFiles[0].file.size,
+        mime: rejectedFiles[0].file.type,
+        name: rejectedFiles[0].file.name,
       });
       helpers.setError(true);
       helpers.setTouched(true);
@@ -287,7 +286,6 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
     onDrop,
     multiple: false,
     accept: accept.join(","),
-    maxSize,
   });
 
   const remove = () => {
@@ -317,7 +315,7 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
 
   const getFileSize = () => {
     const size = field.value.size / 1024;
-    return `${size.toFixed(2)} MB`;
+    return `${size.toFixed(2)} KB`;
   };
 
   return (
@@ -328,7 +326,7 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
         {label} {props.required ? "*" : ""}
       </Label>
 
-      {!field.value?.url && (
+      {!field.value && (
         <Flex
           variant="images.fileUpload"
           {...getRootProps()}
@@ -339,8 +337,8 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
             borderColor: hasError ? "red" : "",
           }}>
           <input {...getInputProps()} />
-          <Text variant="styles.p" mb="0" px={2}>
-            Carregue o ficheiro
+          <Text variant="styles.p" mb="0" px={2} color="white">
+            Drag & Drop the file here
           </Text>
           <Absolute
             sx={{
@@ -350,14 +348,14 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
               p: 3,
             }}>
             <Button variant="small" type="button" disabled={loading}>
-              Selecionar
+              Select
             </Button>
           </Absolute>
           {loading && <SpinnerAbsolute />}
         </Flex>
       )}
 
-      {field.value?.url && (
+      {field.value && (
         <Flex
           variant="images.fileUpload"
           {...getRootProps()}
@@ -365,9 +363,11 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
             justifyContent: "center",
             alignItems: "flex-start",
             pt: 3,
+            borderColor: hasError ? "red" : "",
           }}>
           <Text
             variant="styles.p"
+            color="white"
             mb="0"
             px={2}
             sx={{
@@ -389,14 +389,14 @@ export const FileUploadField = ({ label, accept, maxSize, ...props }) => {
               p: 3,
             }}>
             <Button variant="small.danger" type="button" onClick={remove}>
-              Remover
+              Remove
             </Button>
           </Absolute>
         </Flex>
       )}
 
       {error || hasError ? (
-        <Label variant="label.validation" m={0}>
+        <Label variant="label.validation" mt={2}>
           {error || meta.error}
         </Label>
       ) : null}
