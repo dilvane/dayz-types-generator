@@ -421,11 +421,15 @@ export const Generator = () => {
           id="separator"
           onSubmit={onSubmitSeparatorAdd}
           action={
-            <Button mt={2} mb={3} variant="primary" type="submit">
+            <Button mt={2} mb={1} variant="primary" type="submit">
               Add Separator
             </Button>
           }
         />
+
+        <Box sx={{ textAlign: "center", mb: 3 }}>
+          <Text color="white">&copy; SquadZ Team</Text>
+        </Box>
       </Grid>
       <Grid
         sx={{ gridArea: "Table", overflowY: "auto", bg: "primary" }}
