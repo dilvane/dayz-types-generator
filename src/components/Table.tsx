@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useTable } from "react-table";
 import { VariableSizeList as List } from "react-window";
 import { Box, Flex } from "theme-ui";
@@ -11,35 +11,47 @@ const getCellWidth = (index) => {
   const sx: any = {};
 
   if (index === 0) {
-    sx.flex = "1 0 auto";
+    sx.flex = "1 0 190px";
   } else {
     sx.flex = "0 0 84px";
+    sx.maxWidth = "84px";
   }
 
   if (index === 4) {
     sx.flex = "0 0 40px";
+    sx.maxWidth = "40px";
   }
 
   if (index === 7) {
     sx.flex = "0 0 50px";
+    sx.maxWidth = "50px";
   }
 
   if (index === 8) {
     sx.flex = "0 0 120px";
+    sx.maxWidth = "120px";
   }
 
   if (index === 12) {
     sx.flex = "0 0 70px";
+    sx.maxWidth = "70px";
   }
 
   if (index === 13) {
-    sx.flex = "0 0 110px";
+    sx.flex = "0 0 120px";
+    sx.maxWidth = "120px";
   }
 
   return sx;
 };
 
+const getSize = () =>
+  window.innerHeight ||
+  document.documentElement.clientHeight ||
+  document.body.clientHeight;
+
 export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
+  const [windowSize, setWindowSize] = useState(800);
   const {
     getTableProps,
     getTableBodyProps,
@@ -51,6 +63,23 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
     columns,
     data,
   });
+
+  useEffect(() => {
+    setWindowSize(
+      (window.innerHeight ||
+        document.documentElement.clientHeight ||
+        document.body.clientHeight) - 110
+    );
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize(getSize());
+    }
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const RenderRow = React.useCallback(
     ({ index, style }) => {
@@ -91,7 +120,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
           sx={{
             overflow: "hidden",
             bg: index % 2 === 0 ? "secondary" : "gray.7",
-            pl: 2,
+
             cursor: "pointer",
             ":hover": {
               bg: "primary",
@@ -105,6 +134,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
                 sx={{
                   justifyContent: "flex-start",
                   alignItems: "center",
+                  pl: 2,
                   ...getCellWidth(index),
                 }}>
                 {cell.render("Cell")}
@@ -118,7 +148,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
   );
 
   return (
-    <Box {...getTableProps()} sx={{ color: "white", p: 2 }}>
+    <Box {...getTableProps()} sx={{ color: "white" }}>
       {headerGroups.map((headerGroup) => {
         return headerGroup.headers[0]?.Header ? (
           <Flex {...headerGroup.getHeaderGroupProps()}>
@@ -134,7 +164,7 @@ export const TableUi = ({ columns, data, onClick, clickedRow = false }) => {
       })}
       <Flex {...getTableBodyProps()}>
         <List
-          height={1000}
+          height={windowSize}
           itemCount={rows.length}
           itemSize={(index) => {
             const row = rows[index];

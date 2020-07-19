@@ -21,6 +21,8 @@ import {
   replaceAll,
   addSeparator,
   addType,
+  exportOnlyNames,
+  exportTypes,
 } from "./GeneratorUtils";
 
 export const Generator = () => {
@@ -47,7 +49,7 @@ export const Generator = () => {
                 <Text
                   sx={{
                     wordBreak: "break-all",
-                    maxWidth: "200px",
+                    maxWidth: "190px",
                   }}>
                   {row.original.name}
                 </Text>
@@ -146,19 +148,38 @@ export const Generator = () => {
           {
             Header: "Category",
             accessor: "category",
-            Cell: ({ row }) =>
-              row.original.separator
-                ? row.original.separator
-                : row.original.category?.label || "",
+            Cell: ({ row }) => (
+              <Text
+                sx={{
+                  maxWidth: "84px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}>
+                {row.original.separator
+                  ? row.original.separator
+                  : row.original.category?.label || ""}
+              </Text>
+            ),
           },
           {
             Header: "Usage",
             accessor: "usage",
-            Cell: ({ row }) =>
-              row.original.separator
-                ? row.original.separator
-                : row.original.usage?.map((usage) => usage.label).join(", ") ||
-                  "",
+            Cell: ({ row }) => (
+              <Text
+                sx={{
+                  maxWidth: "84px",
+                  whiteSpace: "nowrap",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                }}>
+                {row.original.separator
+                  ? row.original.separator
+                  : row.original.usage
+                      ?.map((usage) => usage.label)
+                      .join(", ") || ""}
+              </Text>
+            ),
           },
           {
             Header: "Value",
@@ -215,11 +236,15 @@ export const Generator = () => {
 
     if (values.temporaryItem) {
       const { name, temporaryItem, lifetime, flags } = values;
-      const result = [...data, { id, name, temporaryItem, lifetime, flags }];
+      const result = [
+        ...data,
+        { id, name: name.trim(), temporaryItem, lifetime, flags },
+      ];
       setData(result);
       return result;
     } else {
-      const result = [...data, { id, ...values }];
+      const { name } = values;
+      const result = [...data, { id, ...values, name: name.trim() }];
       setData(result);
       return result;
     }
@@ -242,9 +267,10 @@ export const Generator = () => {
       if (item.id === id) {
         if (values.temporaryItem) {
           const { name, temporaryItem, lifetime, flags } = values;
-          return { id, name, temporaryItem, lifetime, flags };
+          return { id, name: name.trim(), temporaryItem, lifetime, flags };
         } else {
-          return { id, ...values };
+          const { name } = values;
+          return { id, ...values, name: name.trim() };
         }
       }
 
@@ -274,7 +300,7 @@ export const Generator = () => {
     let finalSeparator = replaceAll(replaceAll(separator, "<", ""), ">", "");
     const result = [
       ...currentData,
-      { id, separator: finalSeparator || "separator" },
+      { id, separator: finalSeparator.trim() || "separator" },
     ];
     setData(result);
     return result;
@@ -291,7 +317,7 @@ export const Generator = () => {
         );
         return {
           id,
-          separator: finalSeparator || "separator",
+          separator: finalSeparator.trim() || "separator",
         };
       }
 

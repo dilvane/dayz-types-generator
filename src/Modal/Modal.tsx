@@ -13,7 +13,7 @@ export const ModalHeader = ({ title, onRequestClose }) => (
       fontSize: 4,
     }}>
     <Box>
-      <Text>{title}</Text>
+      <Text sx={{ wordBreak: "break-all", maxWidth: "100%" }}>{title}</Text>
     </Box>
     <Box onClick={onRequestClose} sx={{ cursor: "pointer" }}>
       X

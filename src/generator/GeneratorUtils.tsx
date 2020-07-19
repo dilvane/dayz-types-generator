@@ -33,8 +33,8 @@ export const templateType = ({
         <quantmax>${quantmax}</quantmax>
         <cost>${cost}</cost>
         <flags count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" count_in_map="${flags.count_in_map ? "1" : "0"}" count_in_player="${flags.count_in_player ? "1" : "0"}" crafted="${flags.crafted ? "1" : "0"}" deloot="${flags.deloot ? "1" : "0"}" />
-        ${category && `<category name="${category.value}"/>`}
-        ${tag && `<tag name="${tag.value}"/>`}
+        ${category ? `<category name="${category.value}"/>`:""}
+        ${tag ? `<tag name="${tag.value}"/>` :""}
         ${usage?.map((u) => `<usage name="${u.value}"/>`)}
         ${value.map((v) => `<value name="${v.value}"/>`)}
     </type>
@@ -290,10 +290,13 @@ export const addType = (values, actions, data) => {
 
   if (values.temporaryItem) {
     const { name, temporaryItem, lifetime, flags } = values;
-    const result = [...data, { id, name, temporaryItem, lifetime, flags }];
+    const result = [
+      ...data,
+      { id, name: name.trim(), temporaryItem, lifetime, flags },
+    ];
     return result;
   } else {
-    const result = [...data, { id, ...values }];
+    const result = [...data, { id, ...values, name: values.name.trim() }];
     return result;
   }
 };
@@ -302,7 +305,10 @@ export const addSeparator = (values, data) => {
   const id = generateId();
   const { separator } = values;
   let finalSeparator = replaceAll(replaceAll(separator, "<", ""), ">", "");
-  const result = [...data, { id, separator: finalSeparator || "separator" }];
+  const result = [
+    ...data,
+    { id, separator: finalSeparator.trim() || "separator" },
+  ];
 
   return result;
 };
