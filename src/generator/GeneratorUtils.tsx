@@ -4,9 +4,8 @@ export const templateRoot = (
   content
 ) => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <types>
-    ${content}
-</types>
-`;
+${content}
+</types>`;
 
 // prettier-ignore
 export const templateType = ({
@@ -23,8 +22,7 @@ export const templateType = ({
   usage,
   tag,
   value,
-}) => `
-    <type name="${name}">
+}) => `    <type name="${name}">
         <nominal>${nominal}</nominal>
         <lifetime>${lifetime}</lifetime>
         <restock>${restock}</restock>
@@ -32,17 +30,12 @@ export const templateType = ({
         <quantmin>${quantmin}</quantmin>
         <quantmax>${quantmax}</quantmax>
         <cost>${cost}</cost>
-        <flags count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" count_in_map="${flags.count_in_map ? "1" : "0"}" count_in_player="${flags.count_in_player ? "1" : "0"}" crafted="${flags.crafted ? "1" : "0"}" deloot="${flags.deloot ? "1" : "0"}" />
-        ${category ? `<category name="${category.value}"/>`:""}
-        ${tag ? `<tag name="${tag.value}"/>` :""}
-        ${usage ? usage.map((u) => `<usage name="${u.value}"/>`).join("\n        "): ""}
-        ${value ? value.map((v) => `<value name="${v.value}"/>`).join("\n        "): ""}
+        <flags count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" count_in_map="${flags.count_in_map ? "1" : "0"}" count_in_player="${flags.count_in_player ? "1" : "0"}" crafted="${flags.crafted ? "1" : "0"}" deloot="${flags.deloot ? "1" : "0"}" />${category ? `\n        <category name="${category.value}"/>`:""}${tag ? `\n        <tag name="${tag.value}"/>` :""}${usage ? usage.map((u) => `\n        <usage name="${u.value}"/>`): ""}${value ? value.map((v) => `\n        <value name="${v.value}"/>`): ""}
     </type>
 `;
 
 // prettier-ignore
-export const templateTemporaryType = ({ name, lifetime, flags }) => `
-    <type name="${name}">
+export const templateTemporaryType = ({ name, lifetime, flags }) => `    <type name="${name}">
         <lifetime>${lifetime}</lifetime>
         <flags count_in_cargo="${flags.count_in_cargo ? "1" : "0"}" count_in_hoarder="${flags.count_in_hoarder ? "1" : "0"}" count_in_map="${flags.count_in_map ? "1" : "0"}" count_in_player="${flags.count_in_player ? "1" : "0"}" crafted="${flags.crafted ? "1" : "0"}" deloot="${flags.deloot ? "1" : "0"}" />
     </type>
