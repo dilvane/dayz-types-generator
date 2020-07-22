@@ -424,6 +424,7 @@ export const TypesForm = ({
                 required
                 options={categories}
                 isDisabled={values.temporaryItem}
+                isClearable={true}
                 tooltip={() => (
                   <Image
                     src="static/info.svg"
@@ -439,6 +440,7 @@ export const TypesForm = ({
                 name="tag"
                 options={tags}
                 isDisabled={values.temporaryItem}
+                isClearable={true}
                 tooltip={() => (
                   <Image
                     src="static/info.svg"
