@@ -114,12 +114,12 @@ export const loadType = (type, initialValues) => {
     if (newType.hasOwnProperty(item.nodeName)) {
       if (item.nodeName === "flags") {
         const flags = {
-          count_in_cargo: item.getAttribute("count_in_cargo"),
-          count_in_hoarder: item.getAttribute("count_in_hoarder"),
-          count_in_map: item.getAttribute("count_in_map"),
-          count_in_player: item.getAttribute("count_in_player"),
-          crafted: item.getAttribute("crafted"),
-          deloot: item.getAttribute("deloot"),
+          count_in_cargo: Number(item.getAttribute("count_in_cargo")) || 0,
+          count_in_hoarder: Number(item.getAttribute("count_in_hoarder")) || 0,
+          count_in_map: Number(item.getAttribute("count_in_map")) || 0,
+          count_in_player: Number(item.getAttribute("count_in_player")) || 0,
+          crafted: Number(item.getAttribute("crafted")) || 0,
+          deloot: Number(item.getAttribute("deloot")) || 0,
         };
         newType.flags = flags;
       } else if (item.nodeName === "tag") {
@@ -161,12 +161,12 @@ export const loadTemporaryType = (type, initialValues) => {
     if (newType.hasOwnProperty(item.nodeName)) {
       if (item.nodeName === "flags") {
         const flags = {
-          count_in_cargo: item.getAttribute("count_in_cargo") || 0,
-          count_in_hoarder: item.getAttribute("count_in_hoarder") || 0,
-          count_in_map: item.getAttribute("count_in_map") || 0,
-          count_in_player: item.getAttribute("count_in_player") || 0,
-          crafted: item.getAttribute("crafted") || 0,
-          deloot: item.getAttribute("deloot") || 0,
+          count_in_cargo: Number(item.getAttribute("count_in_cargo")) || 0,
+          count_in_hoarder: Number(item.getAttribute("count_in_hoarder")) || 0,
+          count_in_map: Number(item.getAttribute("count_in_map")) || 0,
+          count_in_player: Number(item.getAttribute("count_in_player")) || 0,
+          crafted: Number(item.getAttribute("crafted")) || 0,
+          deloot: Number(item.getAttribute("deloot")) || 0,
         };
         newType.flags = flags;
       } else if (item.nodeName === "lifetime") {
