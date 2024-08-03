@@ -26,7 +26,7 @@ export const Navbar = () => {
           mb: 3,
         }}>
         <Image
-          src="static/TypesGenerator_DAYZ_White_300x300.png"
+          src="/static/TypesGenerator_DAYZ_White_300x300.png"
           sx={{ width: "200px", height: "200px" }}
         />
         <Absolute sx={{ mx: 4, mt: 2, width: "50px", height: "50px" }}>

@@ -179,7 +179,7 @@ export const TypesForm = ({
                 required
                 tooltip={() => (
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-tip="Class Name of Item to Spawn."
@@ -207,7 +207,7 @@ export const TypesForm = ({
                     disabled={values.temporaryItem}
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Number of items spawned in the world at any given time. (Ideal Value) Must be more or equal to min value
@@ -224,7 +224,7 @@ export const TypesForm = ({
                     type="number"
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Time (In Seconds) before this type of items gets deleted in the world (If no players interact with it)
@@ -244,7 +244,7 @@ export const TypesForm = ({
                     disabled={values.temporaryItem}
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="If Value=0, Respawn item type in bulk to reach Nominal Value, If !=0, then Value=Time in seconds to respawn 1 additional item type, until Nominal Value is reached."
@@ -261,7 +261,7 @@ export const TypesForm = ({
                     disabled={values.temporaryItem}
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Minimum number of items of this type in world, Once number falls below minimum, the Restock process begins. (must be less or equal to nominal value)."
@@ -280,7 +280,7 @@ export const TypesForm = ({
                     disabled={values.temporaryItem}
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Minimum % Value for quantity (Rags #, Mag Ammo Value, Ammo Counts), Use -1 if Not Applicable. (less or equal to quantmax value)."
@@ -297,7 +297,7 @@ export const TypesForm = ({
                     disabled={values.temporaryItem}
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Maximum % Value for quantity (Rags #, Mag Ammo Value, Ammo Counts), Use -1 if Not Applicable. (more or equal to quantmin value)."
@@ -315,7 +315,7 @@ export const TypesForm = ({
                 disabled={values.temporaryItem}
                 tooltip={() => (
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-tip="Priority of Item Spawning in CE queue (100 is default)."
@@ -326,7 +326,7 @@ export const TypesForm = ({
                 <Label>
                   Flags{" "}
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-tip="Flags directs the spawner, in what case is must take min and nominal values in to consideration for every item counting for spawning:"
@@ -339,7 +339,7 @@ export const TypesForm = ({
                     required
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Count items stored in containers as part of Nominal Value (0=False, 1=True)."
@@ -352,7 +352,7 @@ export const TypesForm = ({
                     required
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Tents, barrels, undeground stashes (0=False, 1=True)."
@@ -367,7 +367,7 @@ export const TypesForm = ({
                     required
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Count items in map as part of Nominal Value (0=False, 1=True)."
@@ -380,7 +380,7 @@ export const TypesForm = ({
                     required
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Count items stored in Player Inventory as part of Nominal Value (0=False, 1=True)."
@@ -395,7 +395,7 @@ export const TypesForm = ({
                     required
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Is the item a crafted item (0=False, 1=True)."
@@ -408,7 +408,7 @@ export const TypesForm = ({
                     required
                     tooltip={() => (
                       <Image
-                        src="static/info.svg"
+                        src="/static/info.svg"
                         sx={{ ml: 2, width: "15px" }}
                         data-for="tooltip"
                         data-tip="Dynamic event loot objects - helicrashes in majority of cases only by default."
@@ -427,7 +427,7 @@ export const TypesForm = ({
                 isClearable={true}
                 tooltip={() => (
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-tip="Useful for sorting, Internal Category."
@@ -443,7 +443,7 @@ export const TypesForm = ({
                 isClearable={true}
                 tooltip={() => (
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-tip="MUST be AFTER the category."
@@ -459,7 +459,7 @@ export const TypesForm = ({
                 isMulti
                 tooltip={() => (
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-tip="Internal Category used in the mpmissions\dayzOffline.chernarusplus\cfgRandomPresets.xml file."
@@ -476,7 +476,7 @@ export const TypesForm = ({
                 isMulti
                 tooltip={() => (
                   <Image
-                    src="static/info.svg"
+                    src="/static/info.svg"
                     sx={{ ml: 2, width: "15px" }}
                     data-for="tooltip"
                     data-html={true}

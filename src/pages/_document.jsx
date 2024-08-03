@@ -60,7 +60,7 @@ class IndexPage extends Document {
           />
           <meta
             property="og:image"
-            content={`https://dayz-types-generator.vercel.app/static/TypesGenerator_DAYZ_Black_300x300.png`}
+            content={`https://dayz-types-generator.vercel.app//static/TypesGenerator_DAYZ_Black_300x300.png`}
           />
           <meta
             property="og:description"
@@ -68,7 +68,7 @@ class IndexPage extends Document {
           />
           <link
             rel="icon"
-            href="/static/TypesGenerator_DAYZ_White_Favicon.png"
+            href="//static/TypesGenerator_DAYZ_White_Favicon.png"
             sizes="32x32"
             type="image/png"></link>
 

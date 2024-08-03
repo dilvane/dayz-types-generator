@@ -431,7 +431,10 @@ export const Generator = () => {
               onClick={() => setUpload(true)}
               mr="3">
               <Flex sx={{ alignItems: "center" }}>
-                <Image src="static/upload.svg" sx={{ height: "15px", mr: 2 }} />
+                <Image
+                  src="/static/upload.svg"
+                  sx={{ height: "15px", mr: 2 }}
+                />
                 <Text>Upload .xml</Text>
               </Flex>
             </Button>
