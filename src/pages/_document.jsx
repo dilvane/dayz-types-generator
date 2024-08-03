@@ -1,6 +1,8 @@
 import * as Sentry from "@sentry/react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
-import React from "react";
+
+const GTAG = process.env.GTAG || "";
+const SENTRY = process.env.SENTRY || "";
 
 const getGtag = () => {
   if (process.env.NODE_ENV !== "production") {
@@ -11,7 +13,7 @@ const getGtag = () => {
     <>
       <script
         async
-        src="https://www.googletagmanager.com/gtag/js?id=UA-47739782-12"></script>
+        src={`https://www.googletagmanager.com/gtag/js?id=${GTAG}`}></script>
       <script
         dangerouslySetInnerHTML={{
           __html: `
@@ -19,7 +21,7 @@ const getGtag = () => {
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
 
-            gtag('config', 'UA-47739782-12');
+            gtag('config', '${GTAG}');
               `,
         }}
       />
@@ -29,8 +31,7 @@ const getGtag = () => {
 
 if (process.env.NODE_ENV === "production") {
   Sentry.init({
-    dsn:
-      "https://16ef9bb60329446b93f3d2676a608b61@o291221.ingest.sentry.io/5329160",
+    dsn: SENTRY,
   });
 }
 

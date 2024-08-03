@@ -426,10 +426,6 @@ export const Generator = () => {
             </Button>
           }
         />
-
-        <Box sx={{ textAlign: "center", mb: 3, color: "white" }}>
-          <Text>&copy; SquadZ Team</Text>
-        </Box>
       </Grid>
       <Grid
         sx={{ gridArea: "Table", overflowY: "auto", bg: "primary" }}
