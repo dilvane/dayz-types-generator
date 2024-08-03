@@ -1,11 +1,10 @@
 import { TextField, SelectField, CheckField } from "fields";
 import { Form, Formik } from "formik";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
-import React from "react";
-import ReactTooltip from "react-tooltip";
+import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Flex, Box, Label, Text, Image, Button } from "theme-ui";
 import * as Yup from "yup";
-const { object, string, number, array, boolean, mixed } = Yup;
+const { object, string, number, array, bool, mixed } = Yup;
 
 const categories = [
   { value: "clothes", label: "Clothes" },
@@ -54,7 +53,7 @@ const defaultShape = (values) =>
   });
 
 export const validationSchema = object().shape({
-  temporaryItem: boolean(),
+  temporaryItem: bool(),
   name: string().required(),
   nominal: mixed().when("temporaryItem", {
     is: true,
@@ -88,12 +87,12 @@ export const validationSchema = object().shape({
     otherwise: number().required(),
   }),
   flags: object().shape({
-    count_in_cargo: boolean(),
-    count_in_hoarder: boolean(),
-    count_in_map: boolean(),
-    count_in_player: boolean(),
-    crafted: boolean(),
-    deloot: boolean(),
+    count_in_cargo: bool(),
+    count_in_hoarder: bool(),
+    count_in_map: bool(),
+    count_in_player: bool(),
+    crafted: bool(),
+    deloot: bool(),
   }),
   category: mixed().when("temporaryItem", {
     is: true,

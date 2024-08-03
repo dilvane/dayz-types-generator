@@ -1,6 +1,5 @@
-import { Global, css } from "@emotion/core";
+import { Global, css } from "@emotion/react";
 import { darken } from "@theme-ui/color";
-import React from "react";
 
 const dynamicStyles = (theme: any) => css`
   * {

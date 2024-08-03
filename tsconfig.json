@@ -25,7 +25,8 @@
     "noImplicitAny": false,
     "declaration": true,
     "baseUrl": "./src",
-    "noEmit": true
+    "noEmit": true,
+    "incremental": true
   },
   "exclude": [
     "node_modules"

@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import { css } from "@styled-system/css";
-import { ThemeProvider } from "emotion-theming";
-import React from "react";
+import { ThemeProvider } from "@emotion/react";
 import { theme, GlobalStyles } from "theme";
 import { Grid } from "theme-ui";
 
