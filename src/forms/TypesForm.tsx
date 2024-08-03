@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { TextField, SelectField, CheckField } from "fields";
 import { Form, Formik } from "formik";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";

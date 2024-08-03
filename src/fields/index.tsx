@@ -2,7 +2,7 @@ import { Switch } from "@rebass/forms";
 import { Block, Absolute, SpinnerAbsolute } from "components";
 import { useField } from "formik";
 import { useUploadFile } from "hooks";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import InputMask from "react-input-mask";
 import ReactSelect from "react-select";
@@ -164,7 +164,6 @@ export const SelectField = ({ label, options, ...props }) => {
         onChange={onChange}
         onBlur={field.onBlur}
         styles={customSelectStyles}
-        hasError={hasError}
       />
     </Block>
   );
@@ -277,7 +276,7 @@ export const FileUploadField = ({ label, accept, ...props }) => {
         mime: rejectedFiles[0].file.type,
         name: rejectedFiles[0].file.name,
       });
-      helpers.setError(true);
+      helpers.setError("error");
       helpers.setTouched(true);
     }
   };

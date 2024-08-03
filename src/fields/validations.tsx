@@ -6,6 +6,7 @@ export const date = () =>
     .required("Obrigatório")
     .test("invalidDate", "Data inválida", (value) => {
       try {
+        // @ts-ignore
         const date = parse(value, "dd/MM/yyyy", new Date());
         format(date, "dd/MM/yyyy");
         if (date > new Date() || date < new Date("01-01-1900")) {
@@ -24,5 +25,6 @@ export const file = ({ SUPPORTED_FORMATS }) =>
     .test(
       "fileFormat",
       "Format is not supported",
+      // @ts-ignore
       (value) => value && SUPPORTED_FORMATS.includes(value.mime)
     );
