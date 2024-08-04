@@ -58,34 +58,34 @@ export const validationSchema = object().shape({
   name: string().required(),
   nominal: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => number().required(),
+    then: string().nullable(),
+    otherwise: number().required(),
   }),
   lifetime: number().required(),
   restock: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => number().required(),
+    then: string().nullable(),
+    otherwise: number().required(),
   }),
   min: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => number().required(),
+    then: string().nullable(),
+    otherwise: number().required(),
   }),
   quantmin: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => number().required(),
+    then: string().nullable(),
+    otherwise: number().required(),
   }),
   quantmax: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => number().required(),
+    then: string().nullable(),
+    otherwise: number().required(),
   }),
   cost: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => number().required(),
+    then: string().nullable(),
+    otherwise: number().required(),
   }),
   flags: object().shape({
     count_in_cargo: Yup.boolean(),
@@ -97,23 +97,23 @@ export const validationSchema = object().shape({
   }),
   category: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => defaultShape(categories).nullable(),
+    then: string().nullable(),
+    otherwise: defaultShape(categories).nullable(),
   }),
   tag: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => defaultShape(tags).nullable(),
+    then: string().nullable(),
+    otherwise: defaultShape(tags).nullable(),
   }),
   usage: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => array().of(defaultShape(usages)).nullable(),
+    then: string().nullable(),
+    otherwise: array().of(defaultShape(usages)).nullable(),
   }),
   value: mixed().when("temporaryItem", {
     is: true,
-    then: (schema) => string().nullable(),
-    otherwise: (schema) => array().of(defaultShape(valuesItems)).nullable(),
+    then: string().nullable(),
+    otherwise: array().of(defaultShape(valuesItems)).nullable(),
   }),
 });
 
@@ -150,7 +150,7 @@ export const TypesForm = ({
   <Formik
     validateOnMount={false}
     initialValues={initialValues}
-    // validationSchema={validationSchema}
+    validationSchema={validationSchema}
     onSubmit={(values, actions) => onSubmit(values, actions, data)}>
     {({ values, errors }) => {
       return (

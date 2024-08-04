@@ -1,7 +1,7 @@
 import { validationSchema } from "../forms/TypesForm";
 
 export const templateRoot = (
-  content
+  content,
 ) => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <types>
 ${content}
@@ -194,10 +194,10 @@ export const isAtemporaryType = (type) => {
   const temporaryTypeAttributes = ["lifetime", "flags"];
   return (
     ![...type.childNodes].some((node) =>
-      typeAttribures.includes(node.nodeName)
+      typeAttribures.includes(node.nodeName),
     ) &&
     [...type.childNodes].some((node) =>
-      temporaryTypeAttributes.includes(node.nodeName)
+      temporaryTypeAttributes.includes(node.nodeName),
     )
   );
 };
