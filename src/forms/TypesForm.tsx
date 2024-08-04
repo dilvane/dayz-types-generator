@@ -2,7 +2,7 @@
 import { TextField, SelectField, CheckField } from "fields";
 import { Form, Formik } from "formik";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
-import { Tooltip as ReactTooltip } from "react-tooltip";
+import ReactTooltip from "react-tooltip";
 import { Flex, Box, Label, Text, Image, Button } from "theme-ui";
 import * as Yup from "yup";
 const { object, string, number, array, mixed } = Yup;
@@ -168,7 +168,6 @@ export const TypesForm = ({
                 textColor="white"
                 backgroundColor="black"
                 effect="solid"
-                border
                 className="tooltip"
                 html={true}
               />
