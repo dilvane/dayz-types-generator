@@ -5,7 +5,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter } from "Modal";
 import { Tooltip as ReactTooltip } from "react-tooltip";
 import { Flex, Box, Label, Text, Image, Button } from "theme-ui";
 import * as Yup from "yup";
-const { object, string, number, array, bool, mixed } = Yup;
+const { object, string, number, array, mixed } = Yup;
 
 const categories = [
   { value: "clothes", label: "Clothes" },
@@ -54,66 +54,66 @@ const defaultShape = (values) =>
   });
 
 export const validationSchema = object().shape({
-  temporaryItem: bool(),
+  temporaryItem: Yup.boolean(),
   name: string().required(),
   nominal: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: number().required(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => number().required(),
   }),
   lifetime: number().required(),
   restock: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: number().required(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => number().required(),
   }),
   min: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: number().required(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => number().required(),
   }),
   quantmin: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: number().required(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => number().required(),
   }),
   quantmax: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: number().required(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => number().required(),
   }),
   cost: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: number().required(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => number().required(),
   }),
   flags: object().shape({
-    count_in_cargo: bool(),
-    count_in_hoarder: bool(),
-    count_in_map: bool(),
-    count_in_player: bool(),
-    crafted: bool(),
-    deloot: bool(),
+    count_in_cargo: Yup.boolean(),
+    count_in_hoarder: Yup.boolean(),
+    count_in_map: Yup.boolean(),
+    count_in_player: Yup.boolean(),
+    crafted: Yup.boolean(),
+    deloot: Yup.boolean(),
   }),
   category: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: defaultShape(categories).nullable(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => defaultShape(categories).nullable(),
   }),
   tag: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: defaultShape(tags).nullable(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => defaultShape(tags).nullable(),
   }),
   usage: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: array().of(defaultShape(usages)).nullable(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => array().of(defaultShape(usages)).nullable(),
   }),
   value: mixed().when("temporaryItem", {
     is: true,
-    then: string().nullable(),
-    otherwise: array().of(defaultShape(valuesItems)).nullable(),
+    then: (schema) => string().nullable(),
+    otherwise: (schema) => array().of(defaultShape(valuesItems)).nullable(),
   }),
 });
 
@@ -150,7 +150,7 @@ export const TypesForm = ({
   <Formik
     validateOnMount={false}
     initialValues={initialValues}
-    validationSchema={validationSchema}
+    // validationSchema={validationSchema}
     onSubmit={(values, actions) => onSubmit(values, actions, data)}>
     {({ values, errors }) => {
       return (
